@@ -1,0 +1,15 @@
+
+<% _.each(cardWraps, function(cardWrap){ %>
+<section class="card-wrap" style="<%= cardWrap.get("inlineStyle") %>" data-order="<%= cardWrap.get("dataOrder") %>">
+	<section class="card <%= cardWrap.get("sectionName") %> card-loading" data-section-id="<%= cardWrap.get("sectionName") %>" id="section_<%= cardWrap.get("sectionName") %>">
+		<div class="left-suspender size-suspender">
+			<div class="mod clst sections navigation" id="CList-sections">
+				<h1 class="clst-section-name"><%= cardWrap.get("sectionName") %></h1>
+			</div>
+		</div>
+		<div class="border">
+			<div class="punchout-cover"></div>
+		</div>
+	</section>
+</section>
+<%}); %>

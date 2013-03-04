@@ -1,0 +1,57 @@
+<a class="auth icon-anchor">
+  <span class="userbtn-wrap icon-span">
+    <span class="user-avatar">
+      <img class="fb-avatar" alt="" src="" height="22" width="22" />
+    </span>
+    <span class="user-icon"></span>
+  </span>
+</a>
+<div class="dropdown user-dropdown">
+<div id="user-dropdown-viewport">
+  <div class="user-dropdown-wrap" id="user-login-wrap">
+    <p class="user-drop-text">Hãy đăng nhập để sử dụng các chức năng của website.</p>
+    <div id='loginform' class='userform'>
+      <div class="input-prepend">
+        <span class="add-on"><i class="icon-envelope"></i></span>
+        <input type="text" id="loginFormUser" placeholder="Email / Tên đăng nhập" />
+      </div>
+      <div class="input-prepend last-input">
+        <span class="add-on"><i class="icon-key"></i></span>
+        <input type="password" id="loginFormPassword" placeholder="Mật khẩu" />
+      </div>
+      <p class="login-form-alert text-error"></p>
+      <input type="button" id="login-btn" class="btn btn-primary" value="Đăng nhập"/>
+      <input type="button" id="switch2Register-btn" class="btn btn-mini btn-inverse" value="Đăng ký >>"/>
+    </div>
+  </div>
+  <div class="user-dropdown-wrap" id="user-register-wrap">
+    <p class="user-drop-text">Đăng ký nhanh thôi mà!</p>
+    <div id='registerform' class='userform'>
+      <div class="input-prepend">
+        <span class="add-on"><i class="icon-envelope"></i></span>
+        <input type="text" id="registerFormEmail" placeholder="Email" />
+      </div>
+      <div class="input-prepend">
+        <span class="add-on"><i class="icon-user"></i></span>
+        <input type="text" id="registerFormUsername" placeholder="Tên đăng nhập" />
+      </div>
+      <!--<a rel="popover" class="registerForm passwordInput" data-placement="left" data-title="Định dạng mật khẩu" data-content="Tối thiểu 8 ký tự">-->
+      <div class="input-prepend">
+        <span class="add-on"><i class="icon-key"></i></span>
+        <input type="password" id="registerFormPassword" placeholder="Mật khẩu" />
+      </div>
+      <!--</a>-->
+      <div class="input-prepend last-input">
+        <span class="add-on"><i class="icon-key"></i></span>
+        <input type="password" id="registerFormPasswordRetyped" placeholder="Gõ lại" />
+      </div>
+      <input type="button" id="register-btn" class="btn btn-primary" value="Đăng ký"/>
+      <input type="button" id="switch2Login-btn" class="btn btn-mini btn-inverse" value="Đăng nhập <<"/>
+    </div>
+  </div>
+  <div class="user-dropdown-wrap" id="user-logout-wrap">
+    <p class="user-drop-text">Đã đăng nhập vào tài khoản <span class="user-display-name"><%= displayName %></span></p>
+    <input type="button" id="logout-btn" class="btn btn-warning" value="Đăng xuất"/>
+  </div>
+</div>
+</div>

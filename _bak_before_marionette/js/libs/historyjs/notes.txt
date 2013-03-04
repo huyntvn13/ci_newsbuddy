@@ -1,0 +1,11 @@
+https://github.com/balupton/History.js/:
+require vào là route toàn ra default action, có lẽ chưa biết cách s/d
+
+----------------------------------------------------
+https://github.com/documentcloud/backbone/issues/173
+
+Nguồn adapter, có vẻ là ko dùng History.js, mà extend trực tiếp Backbone.history, cũng chưa biết dùng: 
+https://gist.github.com/849441
+
+https://gist.github.com/811849
+good one, có ví dụ, đang dùng đc
