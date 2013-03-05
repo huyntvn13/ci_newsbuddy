@@ -1,12 +1,13 @@
 /*global define*/
 
-define(['jquery', 'underscore', 'marionette','templates', 'readmore', 'throttledebounce'], function ($, _, Marionette,templates) {
+define(['jquery', 'underscore', 'marionette','templates', 'newsContentHelper', 'readmore', 'throttledebounce'], function ($, _, Marionette, templates) {
   "use strict";
 
   return Marionette.CompositeView.extend({
     tagName   :   'section',
     className :   'card-wrap',
     template  :   templates.cardWrapSection,
+    templateHelpers : newsContentHelper,
     
 
     ui : {

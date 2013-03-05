@@ -33,7 +33,7 @@ function getSectionData($section) {
   /* Articles */
   $sql = "SELECT  n.title, n.description, n.link, 
                   n.image_fullsize image, c.name_abbr cat_abbr, 
-                  c.name_short cat_name, s.`name` source 
+                  c.name_short cat_name, s.`name` source, s.alias source_alias
           FROM news_links n 
           LEFT JOIN news_categories c ON n.cat_id = c.id 
           LEFT JOIN news_sources s ON n.source_id = s.id 

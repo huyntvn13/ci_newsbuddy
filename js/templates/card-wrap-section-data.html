@@ -32,7 +32,7 @@
                   <a class="parent-label <%= data["catParent"][news["cat_abbr"]]["parent_abbr"] %>" href="/weather/">
                   <%= news["cat_name"] %>
                   </a>
-                  <a class="anchor" href="/sports/hihi" data-ht="HeadlineGrid1">
+                  <a class="anchor" href="/<%= news.cat_abbr %>/<%= news.source_alias %>/<%= convertToSeoFriendlyUrl(news.title) %>/hihi" data-ht="HeadlineGrid1">
                     <div class="front tile">
                       <% if(news["image"] != "") {%>
                       <div class="image-wrap"><img data-src="<%= news["image"] %>" width="200" height="220" /></div>

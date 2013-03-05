@@ -40,6 +40,9 @@ require.config({
     
     // controllers
     mainController: "controllers/index",
+
+    // helpers
+    newsContentHelper: "libs/newsContentHelper",
   },
 
   shim: {

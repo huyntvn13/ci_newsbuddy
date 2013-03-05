@@ -10,8 +10,8 @@ define(['vent'], function (vent) {
       vent.trigger('newsBuddy:checkToChangeSection', section);
     }, 
     
-    alert : function(section, id) {
-      alert("temp" + id);
+    viewNews : function(section, source, title, id) {
+      alert(section + " " + source + " " + title + " " + id);
     },
   };
 });
