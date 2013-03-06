@@ -59,7 +59,7 @@ define(['jquery', 'underscore', 'marionette','templates', 'newsContentHelper', '
       if(AppCurrentSection == 'null'){
         this.calculateCSS();
       }
-      
+      this.changePosition();
       this.$el.addClass(this.model.get('sectionName'));
       /*
       this.model.fetch({
@@ -141,7 +141,15 @@ define(['jquery', 'underscore', 'marionette','templates', 'newsContentHelper', '
     onError: function() {
       
     },*/
-    
+    changePosition: function() {
+      var sectionName = this.model.get('sectionName');
+      var AppCurrentSection = this.appData.get('currentSection');
+      if(AppCurrentSection == sectionName){
+        this.$el.css("position", '');
+      }else{
+        this.$el.css("position", 'absolute');
+      }
+    },
     calculateCSS: function() {
       var containerCSSLeft =  $(".card-container").css('left');
       if(typeof(containerCSSLeft) == "undefined"){
