@@ -19,7 +19,25 @@ $app->post('/register', 'register');
 $app->get('/retrieve_status', 'retrieveStatus');
 $app->get('/username/:id', authorize('user'), 'getUsername');
 $app->get('/section/:section(/:start(/:limit))', 'getSectionData');
+$app->get('/newsDetails/:newsID', 'getNewsDetails');
 $app->run();
+
+function getNewsDetails($newsID) {
+  $data = (object) null;
+  global $db1;
+  //$sql = "SELECT n.link FROM news_links n WHERE n.id = ".$newsID;
+  
+  $news = null;
+  $news = $db1->news_links()
+              ->select('news_links.link')
+              ->where('news_links.id = ?', $newsID)->fetch();
+  
+  if($news){
+    $newsLink = trim($news['link']);
+    $data->link = $newsLink;
+  }
+  echo json_encode($data);
+}
 
 function getSectionData($section, $start = 0, $limit = 18) {
   $data = (object) null;
