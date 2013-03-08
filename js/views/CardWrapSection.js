@@ -1,6 +1,6 @@
 /*global define*/
 
-define(['jquery', 'underscore', 'marionette','templates', 'newsContentHelper', 'readmore', 'throttledebounce'], function ($, _, Marionette, templates) {
+define(['jquery', 'underscore', 'marionette', 'app', 'templates', 'newsContentHelper', 'readmore', 'throttledebounce'], function ($, _, Marionette, App, templates) {
   "use strict";
 
   return Marionette.CompositeView.extend({

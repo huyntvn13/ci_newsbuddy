@@ -70,9 +70,15 @@ function getSectionData($section, $start = 0, $limit = 18) {
   
   $category_row = $db->news_categories()->select('id, name_short name')->where('name_abbr = ?', $section)->fetch();
   $category = array(
-      'id' => $category_row['id'],
-      'name' => $category_row['name']
+    'id' => $category_row['id'],
+    'name' => $category_row['name']
   );
+  if($section == 'home'){
+    $category = array(
+      'id' => $category_row['id'],
+      'name' => 'Trang chủ'
+    );
+  }
   $data->category = $category;
   
   /* catParent */
