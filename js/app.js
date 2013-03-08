@@ -160,6 +160,8 @@ define([
         easing: "easeInOutCubic",
         queue: false,
         complete: function(){
+          $('.card-wrap.' + animateTo).css('position', '');
+        
           // check to create loop
           var allLeftVals = [];
           var dataOrders = []; // to retrieve section name of max, min

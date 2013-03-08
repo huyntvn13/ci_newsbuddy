@@ -42,17 +42,24 @@ function getNewsDetails($newsID) {
 function getSectionData($section, $start = 0, $limit = 18) {
   $data = (object) null;
   global $db;
-  if ($section == 'home') {
-    $section = 'news';
-  }
   /* Articles */
-  $news_links = $db->news_links()->join('news_categories', 'left join news_categories on news_links.cat_id = news_categories.id')
+  $news_links = array();
+  if ($section == 'home') {
+    $news_links = $db->news_links()->join('news_categories', 'left join news_categories on news_links.cat_id = news_categories.id')
                 ->join('news_sources', 'left join news_sources on news_links.source_id = news_sources.id')    
                 ->select('news_links.id, news_links.title, news_links.description, news_links.link, 
                   news_links.image_fullsize image, news_categories.name_abbr cat_abbr, 
                   news_categories.name_short cat_name, news_sources.`name` source, news_sources.alias source_alias')
-                ->where('news_categories.parent_abbr = ?', $section)
                 ->order('news_links.pubDate desc')->limit($limit, $start);
+  }else{
+    $news_links = $db->news_links()->join('news_categories', 'left join news_categories on news_links.cat_id = news_categories.id')
+                ->join('news_sources', 'left join news_sources on news_links.source_id = news_sources.id')    
+                ->select('news_links.id, news_links.title, news_links.description, news_links.link, 
+                  news_links.image_fullsize image, news_categories.name_abbr cat_abbr, 
+                  news_categories.name_short cat_name, news_sources.`name` source, news_sources.alias source_alias')
+                ->where('news_categories.parent_abbr = ? OR news_categories.name_abbr = ?', $section, $section)
+                ->order('news_links.pubDate desc')->limit($limit, $start);
+  }
   $news = array();
   foreach ($news_links as $news_link) {
       $row = array();        

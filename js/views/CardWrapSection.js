@@ -59,7 +59,7 @@ define(['jquery', 'underscore', 'marionette','templates', 'newsContentHelper', '
       if(AppCurrentSection == 'null'){
         this.calculateCSS();
       }
-      this.changePosition();
+      this.reCalculateCssPositionValue();
       this.$el.addClass(this.model.get('sectionName'));
       /*
       this.model.fetch({
@@ -105,6 +105,18 @@ define(['jquery', 'underscore', 'marionette','templates', 'newsContentHelper', '
         more_link: ""
       });
     },
+    
+    reCalculateCssPositionValue: function() {
+      var canAnimateFromNowOn = this.appData.get('canAnimateFromNowOn');
+      if(canAnimateFromNowOn){
+        var AppCurrentSection = this.appData.get('currentSection');
+        if(AppCurrentSection == this.model.get('sectionName')){
+          this.$el.css("position", '');
+        }else{
+          this.$el.css("position", 'absolute');
+        }
+      }
+    },
 
     events : {
       'click .ui-toggle-btn.grid-big': 'toggleGridList',
@@ -141,15 +153,6 @@ define(['jquery', 'underscore', 'marionette','templates', 'newsContentHelper', '
     onError: function() {
       
     },*/
-    changePosition: function() {
-      var sectionName = this.model.get('sectionName');
-      var AppCurrentSection = this.appData.get('currentSection');
-      if(AppCurrentSection == sectionName || (AppCurrentSection == 'null' && this.model.get('dataOrder') == 0)){
-        this.$el.css("position", '');
-      }else{
-        this.$el.css("position", 'absolute');
-      }
-    },
     calculateCSS: function() {
       var containerCSSLeft =  $(".card-container").css('left');
       if(typeof(containerCSSLeft) == "undefined"){
