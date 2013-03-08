@@ -24,11 +24,11 @@ $app->run();
 
 function getNewsDetails($newsID) {
   $data = (object) null;
-  global $db1;
+  global $db;
   //$sql = "SELECT n.link FROM news_links n WHERE n.id = ".$newsID;
   
   $news = null;
-  $news = $db1->news_links()
+  $news = $db->news_links()
               ->select('news_links.link')
               ->where('news_links.id = ?', $newsID)->fetch();
   
