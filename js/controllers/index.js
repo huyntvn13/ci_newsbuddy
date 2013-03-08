@@ -11,7 +11,7 @@ define(['vent'], function (vent) {
     }, 
     
     viewNews : function(section, source, title, id) {
-      alert(section + " " + source + " " + title + " " + id);
+      vent.trigger('newsBuddy:showNews', section, source, title, id);
     },
   };
 });

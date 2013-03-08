@@ -4863,7 +4863,7 @@ article.stag .galleries.full>.viewport>.slide img {
 	position:absolute
 }
 .puzzle-promo .promo {
-	background:url(../static/images/sprites/puzzles.jpg') no-repeat top left;
+	background:url(../static/images/sprites/puzzles.jpg) no-repeat top left;
 	float:left;
 	height:138px;
 	margin:0 15px -5px -4px;

@@ -11,15 +11,17 @@ define([
   'models/User',
   'models/Breaking',
   'models/CardWrapSection',
+  'models/NewsContent',
   'collections/CardWrapSectionCollection',
   'views/Header',
   'views/UserIcon',
   'views/Breaking',
   'views/Footer',
   'views/CardsNav',
-  'views/CardContainer'
+  'views/CardContainer',
+  'views/NewsContent',
   
-], function($, _, Marionette, vent, NewsBuddyModel, UserModel, BreakingModel, CardWrapSectionModel, CardWrapSectionCollection, Header, UserIcon, Breaking, Footer, CardsNav, CardContainer){
+], function($, _, Marionette, vent, NewsBuddyModel, UserModel, BreakingModel, CardWrapSectionModel, NewsContentModel, CardWrapSectionCollection, Header, UserIcon, Breaking, Footer, CardsNav, CardContainer, NewsContent){
   
   // override to set how view's el is attached (prepend, append)
   Marionette.Region.prototype.show = function(view, type){
@@ -78,9 +80,12 @@ define([
     userIcon        : 'li.user.icon',
     breaking        : '#breaking',
     
-    footer          : 'footer',
+    newsOverlay     : '#overlay-container',
+    
     cardsNav        : '#cards #cards-nav',
     cards           : '#cards',
+    
+    footer          : 'footer',
   });
   
   // Models, Collections
@@ -210,12 +215,34 @@ define([
     ); 
   }
   
+  /* Store window scroll position
+  */
+  var windowOnScroll = function(){
+    var scrollValue = $(window).scrollTop();
+    if(App.appDataModel.get('showingSection')){
+      App.appDataModel.set('currentScrollTopValue', scrollValue);
+      //console.log("updated scrolling value " + scrollValue);
+    }
+  }
+  $(window).scroll( $.debounce( 250, windowOnScroll ) );
+  
   /**********************************************************/
   /************************** VENT **************************/
   /**********************************************************/
   vent.on('newsBuddy:checkToChangeSection',function(section) {
-    var currentSection = App.appDataModel.get('currentSection')
+    // update status showingSection, showingNews
+    App.appDataModel.set('showingSection', true);
+    App.appDataModel.set('showingNews', false);
+  
+    // remove newsOverlay, if being opened
+    App.newsOverlay.reset();
+    $('#overlay-container').removeClass('show');
+    // + display article.cards, again (cause maybe it was hide when we viewed news)
+    // + re-enable scrolling
+    $('article#cards').css('display', '');
+    $('body').removeClass('noscroll');
     
+    var currentSection = App.appDataModel.get('currentSection')
     if(currentSection == 'null'){ // first time, initializing app
       App.cards.show(new CardContainer({
         collection: App.wraps, 
@@ -237,6 +264,20 @@ define([
     if(currentSection != section){ // change section highlight in header
       App.appDataModel.set('currentSection', section);
     }
+  });
+  
+  vent.on('newsBuddy:showNews', function(section, source, title, id) {
+    App.appDataModel.set('showingSection', false);
+    App.appDataModel.set('showingNews', true);
+    
+    var newsModel = new NewsContentModel({
+      newsID: id,
+    });
+    var viewOptions = {
+      model : newsModel,
+      appData: App.appDataModel,
+    };
+    App.newsOverlay.show(new NewsContent(viewOptions));
   });
   
 	return App;

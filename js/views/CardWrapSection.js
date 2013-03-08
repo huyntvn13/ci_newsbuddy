@@ -172,7 +172,7 @@ define(['jquery', 'underscore', 'marionette','templates', 'newsContentHelper', '
       if(this.appData.get('currentCardWidth') != cardWidth)
         this.appData.set('currentCardWidth', cardWidth);
       
-      var gap = (windowWidth - cardWidth) / 2;
+      var gap = (windowWidth - cardWidth - this.scrollbarWidth) / 2;
       this.appData.set('visualGap', gap);
       var initLeft = gap - containerCSSLeft;
       
@@ -242,6 +242,7 @@ define(['jquery', 'underscore', 'marionette','templates', 'newsContentHelper', '
         var visualG = this.appData.get('visualGap')
         var cardContainerLeftVal = 0 - currentSectionLeftVal + visualG;
         $('.card-container').css('left', cardContainerLeftVal + "px"); 
+        
       }
     },
   });

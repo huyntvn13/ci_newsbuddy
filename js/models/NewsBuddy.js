@@ -8,6 +8,9 @@ define(['jquery', 'underscore', 'backbone'],function($, _, Backbone){
       visualGap: 0,
       currentCardWidth: 0,
       animatingSectionSwitching: false,
+      currentScrollTopValue: 0,
+      showingSection: false,
+      showintNews: false,
       
       currentSection: 'null',
       sections: ['home', 'news', 'money', 'sports', 'technology', 'lifestyle', 'education', 'health', 'realestate'],

@@ -25,13 +25,33 @@ $app->post('/register', 'register');
 $app->get('/retrieve_status', 'retrieveStatus');
 $app->get('/username/:id', authorize('user'), 'getUsername');
 $app->get('/section/:section', 'getSectionData');
+$app->get('/newsDetails/:newsID', 'getNewsDetails');
 $app->run();
+
+function getNewsDetails($newsID) {
+  $data = (object) null;
+  $sql = "SELECT n.link FROM news_links n WHERE n.id = ".$newsID;
+  
+  $news = null;
+  try {
+    $db = getConnection();
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
+    $news = $stmt->fetchObject();
+    $db = null;
+  } catch(PDOException $e) {}
+  if($news){
+    $newsLink = trim($news->link);
+    $data->link = $newsLink;
+  }
+  echo json_encode($data);
+}
 
 function getSectionData($section) {
   $data = (object) null;
   
   /* Articles */
-  $sql = "SELECT  n.title, n.description, n.link, 
+  $sql = "SELECT  n.id, n.title, n.description, n.link, 
                   n.image_fullsize image, c.name_abbr cat_abbr, 
                   c.name_short cat_name, s.`name` source, s.alias source_alias
           FROM news_links n 
