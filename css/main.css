@@ -1695,8 +1695,8 @@ a.sp-nav-link {
 }
 .clst-section-name {
   color: #fff;
-  font-family: 'Futura Today Bold',Arial,sans-serif;
-  font-weight: 400;
+  font-family: 'Futura Today',Arial,sans-serif;
+  font-weight: bold;
   font-size: 13px;
   letter-spacing: 1px;
   line-height: 13px;
