@@ -251,10 +251,6 @@ define([
         scrollbarWidth: scrollbarWidth,
       }), 'prepend');
       var wrap = App.wraps.getWrap(section);
-      //var fetching = wrap.fetch();
-      //fetching.done(function(){
-       // alert('aaaaa');
-      //});
       wrap.requestSectionData();
     }else {// from second time
       // allow animation while switching between sections

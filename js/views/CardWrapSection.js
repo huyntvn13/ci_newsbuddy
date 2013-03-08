@@ -144,7 +144,7 @@ define(['jquery', 'underscore', 'marionette','templates', 'newsContentHelper', '
     changePosition: function() {
       var sectionName = this.model.get('sectionName');
       var AppCurrentSection = this.appData.get('currentSection');
-      if(AppCurrentSection == sectionName){
+      if(AppCurrentSection == sectionName || (AppCurrentSection == 'null' && this.model.get('dataOrder') == 0)){
         this.$el.css("position", '');
       }else{
         this.$el.css("position", 'absolute');
