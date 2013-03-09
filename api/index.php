@@ -175,27 +175,26 @@ function login() {
 
 function register() {
   $app = \Slim\Slim::getInstance();
-  global $db;
   $db_connect = dbConnect();
-  $email = $app->request()->params('email');
-  $username = $app->request()->params('username');
-  $password = $app->request()->params('password');
-  $result = array();
-  if (!empty($email) && !empty($username) && !empty($password)) {
-    $email = mysql_real_escape_string($email, $db_connect);
-    $username = mysql_real_escape_string($username, $db_connect);
-    $password = mysql_real_escape_string($password, $db_connect);
-    $pass_md5 = md5($password);
-    $nowFormat = date('Y-m-d H:i:s');
+  if(!empty($_POST['email']) && !empty($_POST['username']) && !empty($_POST['password'])) {
+    $email = mysql_real_escape_string($_POST['email'], $db_connect);
+    $username = mysql_real_escape_string($_POST['username'], $db_connect);
+    $pass = mysql_real_escape_string($_POST['password'], $db_connect);
+    $pass_md5 = md5($pass);
+    
+    /* Query */
+    $sql = "INSERT INTO users(email, username, password_md5, register_since) VALUES(:email, :username, :md5, :time)";
     try {
-      $data = array(
-        'email' => $email,
-        'username' => $username,
-        'password_md5' => $pass_md5,
-        'register_since' => $nowFormat
-      );
-      $db->users()->insert($data);
-    } catch (Exception $e) {
+      $db = getConnection();
+      $stmt = $db->prepare($sql);
+      $nowFormat = date('Y-m-d H:i:s');
+      $stmt->bindParam("email", $email);
+      $stmt->bindParam("username", $username);
+      $stmt->bindParam("md5", $pass_md5);
+      $stmt->bindParam("time", $nowFormat);
+      $stmt->execute();
+      $db = null;
+    } catch(PDOException $e) {
       $message = $e->getMessage();
       $duplicateType = 0;
       if(strpos($message, "Duplicate") && strpos($message, "@")){
@@ -205,24 +204,13 @@ function register() {
         $duplicateType = 2;
       }else{
       }
-      $error = new stdClass();
-      $error->duplicateType = $duplicateType;
-      $result['error'] = $error;
-      echo json_encode($result);
-      //echo '{"error":{"duplicateType":'.$duplicateType.'}}';
+      echo '{"error":{"duplicateType":'.$duplicateType.'}}';
       return;
     }
-    $success = new stdClass();
-    $success->message = 'please check your email for validation email';
-    $result['success'] = $success;    
-    //echo '{"success":{"message":"please check your email for validation email"}}';
+    echo '{"success":{"message":"please check your email for validation email"}}';
   } else {
-    $error = new stdClass();
-    $error->text = 'Email, Username and Password are required.';
-    $result['error'] = $error;
-    //echo '{"error":{"text":"Email, Username and Password are required."}}';
+    echo '{"error":{"text":"Email, Username and Password are required."}}';
   }
-  echo json_encode($result);
 }
 
 function getUsername($id) {
