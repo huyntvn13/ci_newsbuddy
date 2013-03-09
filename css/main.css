@@ -64,7 +64,8 @@ a:visited {
 	color:#4ec4ff
 }
 a:hover {
-	color:#1a95d2
+	color:#1a95d2;
+  text-decoration:none;
 }
 a:focus {
 	outline:thin dotted
@@ -1700,7 +1701,7 @@ a.sp-nav-link {
   letter-spacing: 1px;
   line-height: 13px;
   margin: 0;
-  padding: 15px 5px 10px 5px;
+  padding: 15px 5px 10px;
   text-align: center;
   text-shadow: 0 1px 1px rgba(0,0,0,.15);
   text-transform: uppercase;
@@ -2943,4 +2944,65 @@ article.asset.ui-loading {
 .content#content-loading-overlay {
   position: absolute;
   z-index: 120; /* to be above news content div */
+}
+
+.clst-ordered-items,.clst-unordered-items {
+  list-style:none;
+  list-style-image:none;
+  margin:0;
+  padding:0;
+  position:relative
+}
+.size-suspender .clst-ordered-items,.size-suspender .clst-unordered-items {
+  border-bottom:1px solid rgba(255,255,225,.14);
+  border-top:1px solid rgba(0,0,0,.15);
+  overflow:hidden;
+  width:120px
+}
+.lt-ie9 .clst-ordered-items,.lt-ie9 .clst-unordered-items {
+  display:block;
+  padding-bottom:2px;
+  zoom:1
+}
+.lt-ie9 .size-suspender .clst-ordered-items,.lt-ie9 .size-suspender .clst-unordered-items {
+  background:transparent url(../images/ie-borders/bottom-top-border.png) repeat-x bottom left;
+  border:0
+}
+
+.size-suspender .navigation .clst-item {
+  font-size:13px;
+  line-height:16px
+}
+
+.size-suspender .clst-item {
+  border-bottom:1px solid rgba(0,0,0,.15);
+  border-top:1px solid rgba(255,255,225,.14)
+}
+.size-suspender .clst-link {
+  display:block;
+  padding:10px 10px 10px 15px
+}
+.lt-ie9 .clst-item {
+  border:0;
+  display:block;
+  zoom:1
+}
+.lt-ie9 .size-suspender .clst-item,.lt-ie9 .size-suspender .clst-item {
+  background:transparent url(../images/ie-borders/bottom-top-border.png) repeat-x top left
+}
+.size-suspender .clst-item {
+  color:#fff;
+  font-size:12px;
+  font-weight:700;
+  line-height:15px;
+  padding:0
+}
+.clst-item {
+  border-bottom:1px solid #d3d3d3;
+  border-top:1px solid #fff;
+  position:relative
+}
+
+.clst-link,.clst-link:visited,.clst-link:active,.clst-link:hover,.game,.game:visited {
+  color:inherit
 }
