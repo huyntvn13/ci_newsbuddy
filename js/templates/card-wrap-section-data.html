@@ -66,7 +66,17 @@
           </div>
         </div>
         <div class="size-suspender">
-          <div class="mod clst trending-topics slst" id="CList-trending-topics"></div>
+          <div class="mod clst sections navigation " id="CList-sections">
+            <h1 class="clst-section-name"><%= data["category"]["name"] %></h1>
+            <ul class="scrollable-content clearfix clst-unordered-items">
+            <% for(var i=0, len=data["subCats"].length; i<len; i++){ %>
+              <% var subCat = data["subCats"][i]; %>
+              <li data-href="/" class=" clst-item clst-item-link-styles">
+                <a class="clst-link" href="/" data-ht=""><%= subCat.name %></a>
+              </li>
+            <% } %>
+            </ul>
+          </div>
         </div>
       </div>
     </div>

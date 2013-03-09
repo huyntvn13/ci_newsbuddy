@@ -6,7 +6,7 @@ require 'Slim/Middleware/SessionCookie.php';
 \Slim\Slim::registerAutoloader();
 include "NotORM.php";
 $pdo = new PDO("mysql:host=localhost;dbname=newsbuddy;charset=utf8", "root", "", array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
-$db1 = new NotORM($pdo);
+$db = new NotORM($pdo);
 
 $app = new \Slim\Slim(array(
     'cookies.lifetime' => '1 days', //parsed with `strtotime` internally
@@ -41,12 +41,12 @@ function getNewsDetails($newsID) {
 
 function getSectionData($section, $start = 0, $limit = 18) {
   $data = (object) null;
-  global $db1;
+  global $db;
   if ($section == 'home') {
     $section = 'news';
   }
   /* Articles */
-  $news_links = $db1->news_links()->join('news_categories', 'left join news_categories on news_links.cat_id = news_categories.id')
+  $news_links = $db->news_links()->join('news_categories', 'left join news_categories on news_links.cat_id = news_categories.id')
                 ->join('news_sources', 'left join news_sources on news_links.source_id = news_sources.id')    
                 ->select('news_links.id, news_links.title, news_links.description, news_links.link, 
                   news_links.image_fullsize image, news_categories.name_abbr cat_abbr, 
@@ -61,9 +61,17 @@ function getSectionData($section, $start = 0, $limit = 18) {
   }  
   $data->news = $news;
   
+  $category_row = $db->news_categories()->select('id, name_short name')->where('name_abbr = ?', $section)->fetch();
+  $category = array(
+      'id' => $category_row['id'],
+      'name' => $category_row['name']
+  );
+  $data->category = $category;
+  
   /* catParent */
-  $catParentRaw = $db1->news_categories()->select("id, name_abbr, name, name_short, parent_abbr");
+  $catParentRaw = $db->news_categories()->select("id, name_abbr, name, name_short, parent_abbr");
   $catParent = array();
+  $subCats = array();
   foreach ($catParentRaw as $cat){
     $content = (object) null;
     $content->id = $cat['id'];
@@ -72,15 +80,18 @@ function getSectionData($section, $start = 0, $limit = 18) {
     $content->name_short = $cat['name_short'];
     $content->parent_abbr = $cat['parent_abbr'];
     $catParent[$cat['name_abbr']] = $content;
+    if ($content->parent_abbr == $section) {
+      $subCats[] = $content;
+    }
   }
   $data->catParent = $catParent;
-  
+  $data->subCats = $subCats;
   echo json_encode($data);
 }
 
 function retrieveStatus() {
   $app = \Slim\Slim::getInstance();
-  global $db1;
+  global $db;
   $db_connect = dbConnect();
   $udt_e = $app->getEncryptedCookie('udt_e');
   $udt_r = $app->getEncryptedCookie('udt_r');
@@ -91,7 +102,7 @@ function retrieveStatus() {
     $udt_e = trim(mysql_real_escape_string($udt_e, $db_connect));
     
     /* Query */
-    $user = $db1->users()->select('username, email, role')->where("email = ?", $udt_e)->fetch();
+    $user = $db->users()->select('username, email, role')->where("email = ?", $udt_e)->fetch();
     if ($user){
       $returnedUser = trim($user['username']);
       $returnedUser = ($returnedUser !== "") ? $returnedUser : $user['email'];
@@ -106,7 +117,7 @@ function retrieveStatus() {
 
 function login() {
   $app = \Slim\Slim::getInstance();
-  global $db1;
+  global $db;
   $email = $app->request()->params('email');
   $password = $app->request()->params('password');
   $result = array();
@@ -120,7 +131,7 @@ function login() {
     
     /* Query */
     try {
-      $user = $db1->users()->select('username, email, role')->where('(username = ? or email = ?) and lower(password_md5) = ?', $email, $email, $pass_md5)->fetch();
+      $user = $db->users()->select('username, email, role')->where('(username = ? or email = ?) and lower(password_md5) = ?', $email, $email, $pass_md5)->fetch();
     } catch(Exception $e) {
       $error = new stdClass();
       $error->text = $e.getMessage();
@@ -137,7 +148,7 @@ function login() {
       
       try {        
         $nowFormat = date('Y-m-d H:i:s');
-        $db1->users()->where('email = ?', $user['email'])->update(array('last_login_time' => $nowFormat));
+        $db->users()->where('email = ?', $user['email'])->update(array('last_login_time' => $nowFormat));
       } catch(PDOException $e) {
         //echo '{"error":{"text":'. $e->getMessage() .'}}';
       }
@@ -164,7 +175,7 @@ function login() {
 
 function register() {
   $app = \Slim\Slim::getInstance();
-  global $db1;
+  global $db;
   $db_connect = dbConnect();
   $email = $app->request()->params('email');
   $username = $app->request()->params('username');
@@ -183,7 +194,7 @@ function register() {
         'password_md5' => $pass_md5,
         'register_since' => $nowFormat
       );
-      $db1->users()->insert($data);
+      $db->users()->insert($data);
     } catch (Exception $e) {
       $message = $e->getMessage();
       $duplicateType = 0;
@@ -215,9 +226,9 @@ function register() {
 }
 
 function getUsername($id) {
-  global $db1;
+  global $db;
   try {
-    $user = $db1->users()->select('username')->where('id = ?', $id)->fetch();
+    $user = $db->users()->select('username')->where('id = ?', $id)->fetch();
     $result = new stdClass();
     if ($user) {
       $result->username = $user['username'];
