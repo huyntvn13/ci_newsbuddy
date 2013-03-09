@@ -231,7 +231,7 @@ define([
   /**********************************************************/
   /************************** VENT **************************/
   /**********************************************************/
-  vent.on('newsBuddy:checkToChangeSection',function(section) {
+  vent.on('newsBuddy:checkToChangeSection',function(section, subSection) {
     // check error
     var availableSections = App.appDataModel.get('sections');
     // jquery inArray: found->return index, notFound->return -1
@@ -240,10 +240,20 @@ define([
       App.router.navigate('errors/404', {trigger: true});
       return false;
     }
+    // subSection
+    if(subSection !== undefined){
+      var sections_subSections = App.appDataModel.get('sections_subSections');
+      var isValidSubSection = $.inArray(subSection, sections_subSections[section]);
+      if(section == 'home' || isValidSubSection == -1){
+        App.router.navigate('errors/404', {trigger: true});
+        return false;
+      }
+    }
     
-    // update status showingSection, showingNews
+    // update status showingSection, showingNews, showingError
     App.appDataModel.set('showingSection', true);
     App.appDataModel.set('showingNews', false);
+    App.appDataModel.set('showingError', false);
   
     // remove Overlay, if being opened
     App.overlay.reset();
@@ -254,6 +264,12 @@ define([
     $('body').removeClass('noscroll');
     
     var currentSection = App.appDataModel.get('currentSection')
+    var wrap = App.wraps.getWrap(section);
+    // backup old subSection value of this wrap
+    var subSectionOldValue = wrap.get('subSection');
+    
+    var subSectionValue = (subSection === undefined) ? '' : subSection;
+    wrap.set('subSection', subSectionValue);
     if(currentSection == 'null'){ // first time, initializing app
       App.cards.show(new CardContainer({
         collection: App.wraps, 
@@ -261,11 +277,28 @@ define([
         initSection: section,
         scrollbarWidth: scrollbarWidth,
       }), 'prepend');
-      var wrap = App.wraps.getWrap(section);
       wrap.requestSectionData();
     }else {// from second time
       // allow animation while switching between sections
       App.appDataModel.set('canAnimateFromNowOn', true);
+      
+      if(subSection !== undefined){ // goto subSection => request subSection
+        wrap.set('loading', true);
+        wrap.requestSectionData();
+      }else { // goto Section (bigSection) 
+        // if(currentSection == section) => request Section data
+        if(currentSection == section){
+          wrap.set('loading', true);
+          wrap.requestSectionData();
+        }
+      }
+      
+      // scroll to top or not
+      if(currentSection != section || (currentSection == section && subSectionValue != subSectionOldValue)){
+        $('html, body').animate({
+           scrollTop: 0
+        }, 0);
+      }
     }
     
     if(currentSection != section){ // change section highlight in header
@@ -273,9 +306,10 @@ define([
     }
   });
   
-  vent.on('newsBuddy:showNewsOverlay', function(section, source, title, id) {
+  vent.on('newsBuddy:showNewsOverlay', function(section, subSection, source, title, id) {
     App.appDataModel.set('showingSection', false);
     App.appDataModel.set('showingNews', true);
+    App.appDataModel.set('showingError', false);
     
     var newsModel = new OverlayContentModel({
       overlayType: 'news',
@@ -290,6 +324,7 @@ define([
   
   vent.on('newsBuddy:show404Error', function() {
     App.appDataModel.set('showingSection', false);
+    App.appDataModel.set('showingNews', false);
     App.appDataModel.set('showingError', true);
     App.appDataModel.set('errorType', '404');
     

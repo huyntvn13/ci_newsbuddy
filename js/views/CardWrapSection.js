@@ -54,6 +54,11 @@ define(['jquery', 'underscore', 'marionette', 'app', 'templates', 'newsContentHe
     onRender : function() {
       var self = this;
       console.log("!Notice: after rendering cardWarpSection " + this.model.get('sectionName'));
+      /*
+      $('html, body').animate({
+         scrollTop: 0
+      }, 0);
+      */
       
       var AppCurrentSection = this.appData.get('currentSection');
       if(AppCurrentSection == 'null'){
@@ -61,6 +66,7 @@ define(['jquery', 'underscore', 'marionette', 'app', 'templates', 'newsContentHe
       }
       this.reCalculateCssPositionValue();
       this.$el.addClass(this.model.get('sectionName'));
+      
       /*
       this.model.fetch({
         success: function(data) {

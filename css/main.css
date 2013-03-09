@@ -2993,6 +2993,9 @@ article.asset.ui-loading {
   display:block;
   padding:10px 10px 10px 15px
 }
+.clst-section-name .clst-link, .size-suspender .functional .clst-item {
+  padding: 0;
+}
 .lt-ie9 .clst-item {
   border:0;
   display:block;
@@ -3017,7 +3020,11 @@ article.asset.ui-loading {
 .clst-link,.clst-link:visited,.clst-link:active,.clst-link:hover,.game,.game:visited {
   color:inherit
 }
-
+.size-suspender li[data-href].selected {
+	background-color:rgba(0,0,0,.2);
+	border-bottom:0;
+	border-top-color:rgba(0,0,0,.35)
+}
 .size-suspender li[data-href]:hover {
 	background-color:transparent;
 	background-color:rgba(0,0,0,.05);
@@ -3028,11 +3035,6 @@ article.asset.ui-loading {
 .lt-ie9 .size-suspender .clst>ul>li:hover>a {
 	background:transparent url(../images/pixels/pixel-black-5percent.png) repeat top left;
 	cursor:pointer
-}
-.size-suspender li[data-href].selected {
-	background-color:rgba(0,0,0,.2);
-	border-bottom:0;
-	border-top-color:rgba(0,0,0,.35)
 }
 .lt-ie9 .size-suspender .clst>ul>li.selected,.lt-ie9 .size-suspender li.selected {
 	background:transparent url(../images/pixels/pixel-black-20percent.png) repeat top left

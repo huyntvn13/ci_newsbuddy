@@ -6,8 +6,7 @@ define(['jquery', 'underscore', 'backbone'],function($, _, Backbone){
     defaults : {
   		dataOrder: "0",
       sectionName: "home",
-      //subSection: "None",
-      subSection: "all",
+      subSection: "",
       inlineStyle: "",
       loading: true,
       // "margin: 0px; left: 85px; position: relative; bottom: 0px;"
@@ -20,8 +19,12 @@ define(['jquery', 'underscore', 'backbone'],function($, _, Backbone){
     
     requestSectionData: function() {
       var self = this;
-      //var apiURL = '../api/section/' + this.get('subSection');
-      var apiURL = '../api/section/' + this.get('sectionName');
+      var apiURL = '';
+      if(this.get('subSection') == ''){
+        apiURL = '../api/section/' + this.get('sectionName');
+      }else {
+        apiURL = '../api/section/' + this.get('subSection');
+      }
       $.ajax({
         url: apiURL,
         type: 'GET',

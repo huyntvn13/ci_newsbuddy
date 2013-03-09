@@ -60,12 +60,23 @@ define([
       //window.history.back();
       var self = this;
       var currentSection = this.appData.get('currentSection');
-      if(currentSection == 'home' || currentSection == 'null')
-        currentSection = '';
-      app.router.navigate(currentSection, {trigger: true});
+      var wrap = app.wraps.getWrap(currentSection);
+      var currentSubSection = wrap.get('subSection');
+      var backToPath = '';
+      if(currentSection == 'home' || currentSection == 'null'){
+        backToPath = '';
+      }else {
+        backToPath = '/' + currentSection;
+        if(currentSubSection != ''){
+          backToPath += '/' + currentSubSection;
+        }
+      }
+      app.router.navigate(backToPath, {trigger: true});
+      
       $('html, body').animate({
          scrollTop: self.appData.get('currentScrollTopValue')
       }, 0);
+      
     },
     
     onRender: function() {

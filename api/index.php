@@ -48,14 +48,14 @@ function getSectionData($section, $start = 0, $limit = 18) {
     $news_links = $db->news_links()->join('news_categories', 'left join news_categories on news_links.cat_id = news_categories.id')
                 ->join('news_sources', 'left join news_sources on news_links.source_id = news_sources.id')    
                 ->select('news_links.id, news_links.title, news_links.description, news_links.link, 
-                  news_links.image_fullsize image, news_categories.name_abbr cat_abbr, 
+                  news_links.image_fullsize image, news_categories.section section, news_categories.name_abbr cat_abbr, 
                   news_categories.name_short cat_name, news_sources.`name` source, news_sources.alias source_alias')
                 ->order('news_links.pubDate desc')->limit($limit, $start);
   }else{
     $news_links = $db->news_links()->join('news_categories', 'left join news_categories on news_links.cat_id = news_categories.id')
                 ->join('news_sources', 'left join news_sources on news_links.source_id = news_sources.id')    
                 ->select('news_links.id, news_links.title, news_links.description, news_links.link, 
-                  news_links.image_fullsize image, news_categories.name_abbr cat_abbr, 
+                  news_links.image_fullsize image, news_categories.section section, news_categories.name_abbr cat_abbr, 
                   news_categories.name_short cat_name, news_sources.`name` source, news_sources.alias source_alias')
                 ->where('news_categories.parent_abbr = ? OR news_categories.name_abbr = ?', $section, $section)
                 ->order('news_links.pubDate desc')->limit($limit, $start);
@@ -68,7 +68,13 @@ function getSectionData($section, $start = 0, $limit = 18) {
   }  
   $data->news = $news;
   
-  $category_row = $db->news_categories()->select('id, name_short name')->where('name_abbr = ?', $section)->fetch();
+  // eg: section == 'lifestyle' => bigSection = 'lifestyle'
+  // eg: section == 'culture' => bigSection = 'lifestyle'
+  $parent_abbr_of_section = $db->news_categories()->select('parent_abbr')->where('name_abbr = ?', $section)->fetch();
+  $parent_abbr_of_section = $parent_abbr_of_section['parent_abbr'];
+  $bigSection = ($parent_abbr_of_section == '') ? $section : $parent_abbr_of_section;
+  
+  $category_row = $db->news_categories()->select('id, name_short name')->where('name_abbr = ?', $bigSection)->fetch();
   $category = array(
     'id' => $category_row['id'],
     'name' => $category_row['name']
@@ -93,7 +99,7 @@ function getSectionData($section, $start = 0, $limit = 18) {
     $content->name_short = $cat['name_short'];
     $content->parent_abbr = $cat['parent_abbr'];
     $catParent[$cat['name_abbr']] = $content;
-    if ($content->parent_abbr == $section) {
+    if ($content->parent_abbr == $bigSection) {
       $subCats[] = $content;
     }
   }

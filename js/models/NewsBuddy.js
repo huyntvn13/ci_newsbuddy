@@ -31,6 +31,16 @@ define(['jquery', 'underscore', 'backbone'],function($, _, Backbone){
         'health': 'sức khoẻ',
         'realestate': 'nhà đất',
       },
+      sections_subSections: {
+        'news':       ['politics_social', 'legal', 'world'],
+        'money':      ['business_market', 'stock_market', 'labour_market'],
+        'sports':     [],
+        'technology': ['ict', 'science'],
+        'lifestyle':  ['culture', 'entertainment'],
+        'education':  ['studying_abroad', 'enrollment'],
+        'health':     ['be_healthy', 'gender_health'],
+        'realestate': ['realestate_news', 'living_space'],
+      },
       sectionsDataOrder: [],
     },
     

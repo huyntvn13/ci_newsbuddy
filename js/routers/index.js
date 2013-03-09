@@ -6,9 +6,10 @@ define(['marionette'],function(Marionette) {
     //Configure an AppRouter with appRoutes
     appRoutes:{
       '': 'index',
-      ':section/:source/:title/:id': 'viewNews',
+      ':section/:source/:title/:id': 'viewNews_Section',
+      ':section/:subSection/:source/:title/:id': 'viewNews_SubSection',
       'errors/404': 'error404',
-      ':section/:subsection': 'viewSubsection',      
+      ':section/:subSection': 'handleSubsection',
       ':section*': 'index',
     },
     

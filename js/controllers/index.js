@@ -10,16 +10,22 @@ define(['vent'], function (vent) {
       vent.trigger('newsBuddy:checkToChangeSection', section);
     }, 
     
-    viewNews : function(section, source, title, id) {
-      vent.trigger('newsBuddy:showNewsOverlay', section, source, title, id);
+    handleSubsection : function(section, subSection) {
+      console.log("requested section: " + section + ", subSection: " + subSection)
+      vent.trigger('newsBuddy:checkToChangeSection', section, subSection);
+    },
+    
+    viewNews_Section : function(section, source, title, id) {
+      var subSection = '';
+      vent.trigger('newsBuddy:showNewsOverlay', section, subSection, source, title, id);
+    },
+    
+    viewNews_SubSection : function(section, subSection, source, title, id) {
+      vent.trigger('newsBuddy:showNewsOverlay', section, subSection, source, title, id);
     },
     
     error404: function() {
       vent.trigger('newsBuddy:show404Error');
-    },
-    
-    viewSubsection : function(section, subsection) {
-      console.log("requested section: " + section + ", subsection: " + subsection)
     },
   };
 });

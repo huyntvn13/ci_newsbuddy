@@ -40,8 +40,8 @@ $.fn.centerImage = function(method, callback) {
     $img.css({
       'max-width':  'none',
       'max-height': 'none',
-      'width':      Math.round((div.r > img.r) ^ method ? '100%' : div.h / img.h * img.w),
-      'height':     Math.round((div.r < img.r) ^ method ? '100%' : div.w / img.w * img.h)
+      'width':      Math.ceil((div.r > img.r) ^ method ? '100%' : div.h / img.h * img.w),
+      'height':     Math.ceil((div.r < img.r) ^ method ? '100%' : div.w / img.w * img.h)
     });
 
     // now center - but portrait images need to be centered slightly above halfway (33%)
