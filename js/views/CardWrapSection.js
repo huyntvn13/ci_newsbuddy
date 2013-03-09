@@ -56,6 +56,14 @@ define(['jquery', 'underscore', 'marionette', 'app', 'templates', 'newsContentHe
     onRender : function() {
       var self = this;
       console.log("!Notice: after rendering cardWarpSection " + this.model.get('sectionName'));
+      
+      // switch viewType
+      if(this.model.get('viewType') == "grid"){
+        this.toGridView();
+      }else{ // to list view
+        this.toListView();
+      }
+      
       /*
       $('html, body').animate({
          scrollTop: 0
@@ -131,25 +139,34 @@ define(['jquery', 'underscore', 'marionette', 'app', 'templates', 'newsContentHe
       'click .ui-toggle-btn.list-big': 'toggleGridList',
     },
     
+    
+    toListView: function() {
+      this.model.set('viewType', 'list');
+      $('.ui-toggle-btn.grid-big').removeClass('active');
+      $('.ui-toggle-btn.list-big').addClass('active');
+      $('.headlines div.collection').addClass('listview');
+      $('.front.tile .image-wrap > img').each(function(){
+        var thisImgTag = $(this);
+        thisImgTag.centerImage();
+      });
+    },
+    toGridView: function() {
+      this.model.set('viewType', 'grid');
+      $('.ui-toggle-btn.list-big').removeClass('active');
+      $('.ui-toggle-btn.grid-big').addClass('active');
+      $('.headlines div.collection').removeClass('listview');
+      $('.front.tile .image-wrap > img').each(function(){
+        var thisImgTag = $(this);
+        thisImgTag.centerImage();
+      });
+    },
     toggleGridList: function() {
       if($('.ui-toggle-btn.grid-big').hasClass('active')){ 
         // to listview
-        $('.ui-toggle-btn.grid-big').removeClass('active');
-        $('.ui-toggle-btn.list-big').addClass('active');
-        $('.headlines div.collection').addClass('listview');
-        $('.front.tile .image-wrap > img').each(function(){
-          var thisImgTag = $(this);
-          thisImgTag.centerImage();
-        });
+        this.toListView();
       }else{ 
         // to gridview
-        $('.ui-toggle-btn.list-big').removeClass('active');
-        $('.ui-toggle-btn.grid-big').addClass('active');
-        $('.headlines div.collection').removeClass('listview');
-        $('.front.tile .image-wrap > img').each(function(){
-          var thisImgTag = $(this);
-          thisImgTag.centerImage();
-        });
+        this.toGridView();
       }
     },
 

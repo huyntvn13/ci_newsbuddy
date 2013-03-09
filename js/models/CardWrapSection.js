@@ -7,6 +7,7 @@ define(['jquery', 'underscore', 'backbone'],function($, _, Backbone){
   		dataOrder: "0",
       sectionName: "home",
       subSection: "",
+      viewType: "grid",
       inlineStyle: "",
       loading: true,
       // "margin: 0px; left: 85px; position: relative; bottom: 0px;"
