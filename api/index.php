@@ -20,6 +20,7 @@ $app->get('/retrieve_status', 'retrieveStatus');
 $app->get('/username/:id', authorize('user'), 'getUsername');
 $app->get('/section/:section(/:start(/:limit))', 'getSectionData');
 $app->get('/newsDetails/:newsID', 'getNewsDetails');
+$app->post('/search', 'getSearchResult');
 $app->run();
 
 function getNewsDetails($newsID) {
@@ -299,6 +300,31 @@ function authorize($role = "user") {
       $app->halt(401, 'You shall not pass! Please login.');
     }
   };
+}
+
+function getSearchResult() {
+  $app = \Slim\Slim::getInstance();
+  global $db;
+  $data = (object) null;
+  $keyword = $app->request()->params('keyword');
+  $db_connect = dbConnect();
+  $keyword = mysql_real_escape_string($keyword, $db_connect);
+  
+  $news_links = $db->news_links()->join('news_categories', 'left join news_categories on news_links.cat_id = news_categories.id')
+                ->join('news_sources', 'left join news_sources on news_links.source_id = news_sources.id')    
+                ->select('news_links.id, news_links.title, news_links.description, news_links.link, 
+                  news_links.image_fullsize image, news_categories.name_abbr cat_abbr, 
+                  news_categories.name_short cat_name, news_sources.`name` source, news_sources.alias source_alias')
+                ->where('news_links.title LIKE ?', "%$keyword%")
+                ->order('news_links.pubDate desc')->limit(10, 0);
+  $news = array();
+  foreach ($news_links as $news_link) {
+      $row = array();        
+      $row = iterator_to_array($news_link, true);
+      $news[] = $row;
+  }  
+  $data->news = $news;
+  echo json_encode($data);
 }
 
 function getConnection() {
