@@ -9,6 +9,6 @@ define(function(require){
     cardsNav            : require('tpl!templates/cards-nav.html'),
     cardWrapSection     : require('tpl!templates/card-wrap-section.html'),
     cardWrapSectionData : require('tpl!templates/card-wrap-section-data.html'),
-    newsContent         : require('tpl!templates/news-content.html'),
+    overlayContent      : require('tpl!templates/overlay-content.html'),
   };
 });

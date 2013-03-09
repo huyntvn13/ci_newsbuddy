@@ -1,0 +1,62 @@
+<% if(overlayType == "news"){ %>
+<div class="content" id="content-loading-overlay">
+  <div class="transition-wrap">
+    <article class="asset clearfix story ui-loading light-medium"></article>
+  </div>
+</div>
+<%}%>
+
+<div class="content">
+  <div class="transition-wrap zoomed-in">
+    <%
+    var storyType = (overlayType == "news") ? "story" : "error";
+    %>
+    <article class="asset clearfix <%= storyType %>" data-texttype="<%= storyType %>">
+      <div class="close-wrap"><a class="close close-overlay" data-ht="modalclose"></a></div>
+      <%
+      if(overlayType == "news"){
+        var iframeHeight = $(window).height() - 40;
+      %>
+      <iframe id="news-origin" sandbox="allow-scripts" src="" style="height:<%= iframeHeight %>px;"></iframe>
+      <!-- utility bar -->
+      <div class="utility-wrap active show">
+        <div class="utility-bar"></div>
+      </div>
+      <%} else if(overlayType == "error") {
+        var lang = App.appDataModel.get("lang");
+        var errorHead     = (lang == "vi") ? "SẶC, LỖI RỒI!" : "OH, SNAP!";
+        var errorInfo     = (lang == "vi") ? "Không tìm thấy trang bạn yêu cầu." : "The Page you requested cannot be displayed.";
+        var errorMessage  = (lang == "vi") ? "Trang bạn đang tìm có thể không tồn tại, hoặc đã được chuyển sang <br /> địa chỉ khác. Hãy quay lại Trang chủ nhé" : "This page may have moved or no longer exists. You can search <br> for the page you were looking for or go back to USA Today home";
+      %>
+      <div class="error404 error">
+        <h1 class="head"><%= errorHead %></h1>
+        <h2 class="info"><%= errorInfo %></h2>
+        <h3 class="message"><%= errorMessage %></h3>
+      </div>
+      <%} else {}%>
+      <div class="clearfix"></div>
+    </article>
+  </div>
+</div>
+<% if(overlayType == "news"){ %>
+<div class="arrows overlay-arrows show">
+  <div class="previous-wrap "><a class="previous" href="" data-ht="articlearrowprevious"></a></div>
+  <div class="next-wrap "><a class="next" href="" data-ht="articlearrownext"></a></div>
+</div>
+<%}%>
+<div class="film show"></div>
+<section class="card-wrap">
+  <% 
+  var sectionText = "home";
+  if(overlayType == "news"){ 
+    sectionText = App.appDataModel.get("currentSection");
+  }
+  %>
+  <section class="card <%= sectionText %> card-loading" id="section_news">
+    <div class="left-suspender size-suspender"></div>
+    <div class="border"></div>
+    <div class="size-bar paper-shade">
+      <div class="mod live-feed"></div>
+    </div>
+  </section>
+</section>

@@ -4,13 +4,19 @@ define(['jquery', 'underscore', 'backbone'],function($, _, Backbone){
 
   return Backbone.Model.extend({
     defaults: {
+      lang: 'vi',
+      
       canAnimateFromNowOn: false,
       visualGap: 0,
       currentCardWidth: 0,
       animatingSectionSwitching: false,
       currentScrollTopValue: 0,
+      
       showingSection: false,
-      showintNews: false,
+      showingNews: false,
+      showingError: false,
+      errorType: "404", // page not found
+      
       
       currentSection: 'null',
       sections: ['home', 'news', 'money', 'sports', 'technology', 'lifestyle', 'education', 'health', 'realestate'],

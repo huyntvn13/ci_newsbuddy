@@ -11,7 +11,7 @@ define([
   'models/User',
   'models/Breaking',
   'models/CardWrapSection',
-  'models/NewsContent',
+  'models/OverlayContent',
   'collections/CardWrapSectionCollection',
   'views/Header',
   'views/UserIcon',
@@ -19,9 +19,9 @@ define([
   'views/Footer',
   'views/CardsNav',
   'views/CardContainer',
-  'views/NewsContent',
+  'views/OverlayContent',
   
-], function($, _, Marionette, vent, NewsBuddyModel, UserModel, BreakingModel, CardWrapSectionModel, NewsContentModel, CardWrapSectionCollection, Header, UserIcon, Breaking, Footer, CardsNav, CardContainer, NewsContent){
+], function($, _, Marionette, vent, NewsBuddyModel, UserModel, BreakingModel, CardWrapSectionModel, OverlayContentModel, CardWrapSectionCollection, Header, UserIcon, Breaking, Footer, CardsNav, CardContainer, OverlayContent){
   
   // override to set how view's el is attached (prepend, append)
   Marionette.Region.prototype.show = function(view, type){
@@ -80,7 +80,7 @@ define([
     userIcon        : 'li.user.icon',
     breaking        : '#breaking',
     
-    newsOverlay     : '#overlay-container',
+    overlay         : '#overlay-container',
     
     cardsNav        : '#cards #cards-nav',
     cards           : '#cards',
@@ -232,12 +232,21 @@ define([
   /************************** VENT **************************/
   /**********************************************************/
   vent.on('newsBuddy:checkToChangeSection',function(section) {
+    // check error
+    var availableSections = App.appDataModel.get('sections');
+    // jquery inArray: found->return index, notFound->return -1
+    var checkSectionResult = $.inArray(section, availableSections);
+    if(checkSectionResult == -1) {
+      App.router.navigate('errors/404', {trigger: true});
+      return false;
+    }
+    
     // update status showingSection, showingNews
     App.appDataModel.set('showingSection', true);
     App.appDataModel.set('showingNews', false);
   
-    // remove newsOverlay, if being opened
-    App.newsOverlay.reset();
+    // remove Overlay, if being opened
+    App.overlay.reset();
     $('#overlay-container').removeClass('show');
     // + display article.cards, again (cause maybe it was hide when we viewed news)
     // + re-enable scrolling
@@ -264,18 +273,34 @@ define([
     }
   });
   
-  vent.on('newsBuddy:showNews', function(section, source, title, id) {
+  vent.on('newsBuddy:showNewsOverlay', function(section, source, title, id) {
     App.appDataModel.set('showingSection', false);
     App.appDataModel.set('showingNews', true);
     
-    var newsModel = new NewsContentModel({
+    var newsModel = new OverlayContentModel({
+      overlayType: 'news',
       newsID: id,
     });
     var viewOptions = {
       model : newsModel,
       appData: App.appDataModel,
     };
-    App.newsOverlay.show(new NewsContent(viewOptions));
+    App.overlay.show(new OverlayContent(viewOptions));
+  });
+  
+  vent.on('newsBuddy:show404Error', function() {
+    App.appDataModel.set('showingSection', false);
+    App.appDataModel.set('showingError', true);
+    App.appDataModel.set('errorType', '404');
+    
+    var errorModel = new OverlayContentModel({
+      overlayType: 'error',
+    });
+    var viewOptions = {
+      model : errorModel,
+      appData: App.appDataModel,
+    };
+    App.overlay.show(new OverlayContent(viewOptions));
   });
   
 	return App;

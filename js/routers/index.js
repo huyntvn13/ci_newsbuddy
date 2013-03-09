@@ -7,6 +7,7 @@ define(['marionette'],function(Marionette) {
     appRoutes:{
       '': 'index',
       ':section/:source/:title/:id': 'viewNews',
+      'errors/404': 'error404',
       ':section*': 'index',
     },
     
