@@ -29,12 +29,14 @@ function getNewsDetails($newsID) {
   
   $news = null;
   $news = $db->news_links()
-              ->select('news_links.link')
+              ->select('news_links.link, news_links.title')
               ->where('news_links.id = ?', $newsID)->fetch();
   
   if($news){
     $newsLink = trim($news['link']);
+    $newsTitle = trim($news['title']);
     $data->link = $newsLink;
+    $data->title = $newsTitle;
   }
   echo json_encode($data);
 }
@@ -75,9 +77,14 @@ function getSectionData($section, $start = 0, $limit = 18) {
   $bigSection = ($parent_abbr_of_section == '') ? $section : $parent_abbr_of_section;
   
   $category_row = $db->news_categories()->select('id, name_short name')->where('name_abbr = ?', $bigSection)->fetch();
+  $requestedSectionName = $db->news_categories()->select('name')->where('name_abbr = ?', $section)->fetch();
   $category = array(
+    // id and name of big Section. e.g: lifestyle, sports
     'id' => $category_row['id'],
-    'name' => $category_row['name']
+    'name' => $category_row['name'],
+    
+    // name of requested section. e.g: lifestyle, and its subSection: culture, entertainment
+    'name_requestedSection' => $requestedSectionName['name'],
   );
   if($section == 'home'){
     $category = array(

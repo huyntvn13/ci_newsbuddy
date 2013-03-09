@@ -33,6 +33,9 @@ define([
         return false;
       }
       
+      // update title
+      $('head title').html(this.model.get('data').title + ' - ' + app.appDataModel.get('siteNameFull'));
+      
       $('#content-loading-overlay .transition-wrap').animate({
           opacity: 0,
         }, {
@@ -80,6 +83,14 @@ define([
     },
     
     onRender: function() {
+      // update title
+      var overlayType = this.model.get('overlayType');
+      if(overlayType == "news"){
+        $('head title').html('Loading - ' + app.appDataModel.get('siteNameFull'));
+      }else if(overlayType == "error"){
+        $('head title').html('Error - ' + app.appDataModel.get('siteNameFull'));
+      }else{}
+    
       $('#overlay-container').addClass('show');
       $('article#cards').css('display', 'none');
       
@@ -91,7 +102,7 @@ define([
       $('body').addClass('noscroll');
       
       // get data, only if overlay type is 'news'
-      if(this.model.get('overlayType') == 'news'){
+      if(overlayType == 'news'){
         this.model.requestNewsData();
       }
     },

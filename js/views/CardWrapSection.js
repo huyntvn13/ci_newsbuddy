@@ -22,8 +22,10 @@ define(['jquery', 'underscore', 'marionette', 'app', 'templates', 'newsContentHe
     loadingStateChanged: function() {
       var loading = this.model.get("loading");
       if(loading){
+        $('head title').html('Loading... - ' + app.appDataModel.get('siteNameFull'));
         this.template = templates.cardWrapSection;
       }else{
+        $('head title').html(this.model.get('data').category.name_requestedSection + ' - ' + app.appDataModel.get('siteNameFull'));
         this.template = templates.cardWrapSectionData;
       }
       this.render();
