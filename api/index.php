@@ -88,9 +88,11 @@ function getSectionData($section, $start = 0, $limit = 18) {
     'name_requestedSection' => $requestedSectionName['name'],
   );
   if($section == 'home'){
+    $homepageName = 'Trang chủ';
     $category = array(
       'id' => $category_row['id'],
-      'name' => 'Trang chủ'
+      'name' => $homepageName,
+      'name_requestedSection' => $homepageName,
     );
   }
   $data->category = $category;
