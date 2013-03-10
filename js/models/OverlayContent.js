@@ -4,6 +4,7 @@ define(['jquery', 'underscore', 'backbone'],function($, _, Backbone){
 
   return Backbone.Model.extend({
     defaults: {
+      overlayType: 'news', // posible types: news, error
       newsID: 0,
     },
 
@@ -29,7 +30,7 @@ define(['jquery', 'underscore', 'backbone'],function($, _, Backbone){
           else {
             self.set('data', res);
             //console.log("newsContent data:");
-            //console.log(self.get('data'));
+            //console.log(res);
           }
         },
       });

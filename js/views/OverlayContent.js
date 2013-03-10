@@ -3,13 +3,12 @@
 define([
   'jquery',
   'marionette',
-  'app',
   'templates',
-  ], function ($, Marionette, App, templates) {
+  ], function ($, Marionette, templates) {
   "use strict";
 
   return Marionette.ItemView.extend({
-    template : templates.newsContent,
+    template : templates.overlayContent,
     tagName: 'div',
     id: 'overlay',
     //className: 'fixed-wrap',
@@ -29,6 +28,10 @@ define([
     dataChanged: function() {
       var self = this;
       var newsOriginURL = this.model.get('data').link;
+      if(newsOriginURL === undefined){
+        app.router.navigate('errors/404', {trigger: true});
+        return false;
+      }
       
       $('#content-loading-overlay .transition-wrap').animate({
           opacity: 0,
@@ -45,10 +48,15 @@ define([
     },
 
     events: {
-			'click .transition-wrap.zoomed-in': 'closeNewsBox',
+			'click div.transition-wrap.zoomed-in': 'closeOverlayBox',
+			'click div.error': 'dontCloseOverlayBox',
 		},
     
-    closeNewsBox: function() {
+    dontCloseOverlayBox: function() {
+      return false;
+    },
+    
+    closeOverlayBox: function() {
       //window.history.back();
       var self = this;
       var currentSection = this.appData.get('currentSection');
@@ -71,8 +79,10 @@ define([
       // disable page scroll
       $('body').addClass('noscroll');
       
-      // get data
-      this.model.requestNewsData();
+      // get data, only if overlay type is 'news'
+      if(this.model.get('overlayType') == 'news'){
+        this.model.requestNewsData();
+      }
     },
   });
 

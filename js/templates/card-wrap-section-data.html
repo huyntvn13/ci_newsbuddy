@@ -25,11 +25,21 @@
                 <% for(var i=0, len=data["news"].length; i<len; i++){
                    var news = data["news"][i]; 
                    var columnText = (i%2==0) ? "first-column" : "last-column";
-                   var noimage = (news["image"] == "") ? "noimage" : ""; 
+                   var noimage = (news["image"] == "") ? "noimage" : "";
+                   
+                   var parentAbbr = data["catParent"][news["cat_abbr"]]["parent_abbr"];
+                   var belongToSection = (parentAbbr == "") ? data["catParent"][news["cat_abbr"]]["name_abbr"] : parentAbbr;
+                   
+                   var sectionHref = "";
+                   if(parentAbbr == ""){
+                      sectionHref = "/" + belongToSection;
+                   }else {
+                      sectionHref = "/" + belongToSection + "/" + news["cat_abbr"];
+                   }
                    %>
-                <div class="<%= columnText %> headline <%= noimage %> <%= data["catParent"][news["cat_abbr"]]["parent_abbr"] %>" data-href="/story/weather/2013/02/08/northeast-new-england-blizzard/1900077/" data-vr-contentbox="">
+                <div class="<%= columnText %> headline <%= noimage %> <%= belongToSection %>" data-vr-contentbox="">
                   <div class="authors byline byline-nopub"><span class="author"><em><%= news["source"] %></em></span></div>
-                  <a class="parent-label <%= data["catParent"][news["cat_abbr"]]["parent_abbr"] %>" href="/weather/">
+                  <a class="parent-label <%= belongToSection %>" href="<%= sectionHref %>">
                   <%= news["cat_name"] %>
                   </a>
                   <a class="anchor" href="/<%= news.cat_abbr %>/<%= news.source_alias %>/<%= convertToSeoFriendlyUrl(news.title) %>/<%= news.id %>" data-ht="HeadlineGrid1">
@@ -71,8 +81,8 @@
             <ul class="scrollable-content clearfix clst-unordered-items">
             <% for(var i=0, len=data["subCats"].length; i<len; i++){ %>
               <% var subCat = data["subCats"][i]; %>
-              <li data-href="/" class=" clst-item clst-item-link-styles">
-                <a class="clst-link" href="/" data-ht="/"><%= subCat.name %></a>
+              <li data-href="/<%= subCat.parent_abbr %>/<%= subCat.name_abbr %>" class=" clst-item clst-item-link-styles">
+                <a class="clst-link" href="/<%= subCat.parent_abbr %>/<%= subCat.name_abbr %>" data-ht="/"><%= subCat.name %></a>
               </li>
             <% } %>
             </ul>

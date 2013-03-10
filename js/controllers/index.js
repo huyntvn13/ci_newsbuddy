@@ -11,7 +11,11 @@ define(['vent'], function (vent) {
     }, 
     
     viewNews : function(section, source, title, id) {
-      vent.trigger('newsBuddy:showNews', section, source, title, id);
+      vent.trigger('newsBuddy:showNewsOverlay', section, source, title, id);
+    },
+    
+    error404: function() {
+      vent.trigger('newsBuddy:show404Error');
     },
     
     viewSubsection : function(section, subsection) {
