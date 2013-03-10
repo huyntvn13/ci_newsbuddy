@@ -7,6 +7,7 @@ define(['marionette'],function(Marionette) {
     appRoutes:{
       '': 'index',
       ':section/:source/:title/:id': 'viewNews',
+      ':section/:subsection': 'viewSubsection',
       ':section*': 'index',
     },
     

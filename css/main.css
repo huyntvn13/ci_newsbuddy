@@ -3006,3 +3006,16 @@ article.asset.ui-loading {
 .clst-link,.clst-link:visited,.clst-link:active,.clst-link:hover,.game,.game:visited {
   color:inherit
 }
+
+.size-suspender .clst-item-link-styles:hover {
+  background-color:transparent;
+  background-color:rgba(0,0,0,.05);
+  border-bottom-color:rgba(0,0,0,.05);
+  border-top-color:rgba(0,0,0,.05);
+  cursor:pointer
+}
+.clst-item-link-styles.selected {
+  background-color:rgba(0,0,0,.2);
+  border-bottom:0;
+  border-top-color:rgba(0,0,0,.35)
+}

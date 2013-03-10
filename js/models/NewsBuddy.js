@@ -10,7 +10,7 @@ define(['jquery', 'underscore', 'backbone'],function($, _, Backbone){
       animatingSectionSwitching: false,
       currentScrollTopValue: 0,
       showingSection: false,
-      showintNews: false,
+      showingNews: false,
       
       currentSection: 'null',
       sections: ['home', 'news', 'money', 'sports', 'technology', 'lifestyle', 'education', 'health', 'realestate'],
