@@ -90,7 +90,8 @@ function getSectionData($section, $start = 0, $limit = 18) {
   if($section == 'home'){
     $category = array(
       'id' => $category_row['id'],
-      'name' => 'Trang chủ'
+      'name' => 'Trang chủ',
+      'name_requestedSection' => 'Trang chủ'
     );
   }
   $data->category = $category;
