@@ -445,7 +445,7 @@ p {
 }
 .show-search #masthead #logo-link, #masthead .large #logo-link {
 	background-position: left 0px;
-	height: 47px;
+	height: 48px;
 	margin-top: 16px;
 	width: 324px;
 }
@@ -1825,9 +1825,9 @@ a.button-add-content {
 }
 .headlines .head .title {
 	color: #666;
-	font-family: 'Futura Today Bold',arial,sans-serif;
+	font-family: 'Futura Today',arial,sans-serif;
 	font-size: 15px;
-	font-weight: 400;
+	font-weight: bold;
 	margin: 0 5px 0 20px;
 	padding: 16px 0 0;
 	text-transform: uppercase;

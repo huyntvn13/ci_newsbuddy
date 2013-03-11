@@ -25,6 +25,15 @@ define(['jquery', 'underscore', 'marionette', 'app', 'templates', 'newsContentHe
         $('head title').html('Loading... - ' + app.appDataModel.get('siteNameFull'));
         this.template = templates.cardWrapSection;
       }else{
+        var timeNowObj = new Date($.now()),
+        h = timeNowObj.getHours(), // 0-24 format
+        m = timeNowObj.getMinutes();
+        var hStr = (h>12) ? (h-12): h,
+        mStr = (m<10) ? ('0'+m) : m;
+        var timeNowStr = hStr + ":" + mStr;
+        timeNowStr += (h>=12) ? " pm" : " am";
+        this.model.set('updatedTime', timeNowStr);
+        
         $('head title').html(this.model.get('data').category.name_requestedSection + ' - ' + app.appDataModel.get('siteNameFull'));
         this.template = templates.cardWrapSectionData;
       }
