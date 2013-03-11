@@ -12,7 +12,7 @@ define(['vent'], function (vent) {
     
     searchNews : function(keyword) {
       console.log("keyword: " + keyword);
-      vent.trigger('newsBuddy:showSearchResult', keyword);
+      //vent.trigger('newsBuddy:showSearchResult', keyword);
     },
     
     handleSubsection : function(section, subSection) {

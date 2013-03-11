@@ -60,7 +60,7 @@ define([
       }
       keyword = encodeURIComponent(keyword);
       //window.location.href="/search/" + keyword;
-      alert(keyword);
+      app.router.navigate('/search/' + keyword, {trigger: true});
     },
     
 		toggleSearchForm: function(){	
