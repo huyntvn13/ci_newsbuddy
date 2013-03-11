@@ -34,8 +34,6 @@ define([
 		},
     
     onRender: function() {
-      $('#search-result-container').addClass('show');
-      $('article#cards').css('display', 'none');
     },
   });
 
