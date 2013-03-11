@@ -10,8 +10,8 @@ define([
   return Marionette.ItemView.extend({
     template : templates.overlaySearchResult,
     tagName: 'div',
-    id: 'search-result',
-    //className: 'fixed-wrap',
+    //id: 'search-result',
+    className: 'search-results',
     
     initialize : function(options) {
       //this.appData = options.appData;
@@ -34,7 +34,8 @@ define([
 		},
     
     onRender: function() {
-      
+      $('#search-result-container').addClass('show');
+      $('article#cards').css('display', 'none');
     },
   });
 
