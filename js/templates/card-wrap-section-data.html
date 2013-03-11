@@ -37,11 +37,22 @@
                       sectionHref = "/" + belongToSection + "/" + news["cat_abbr"];
                    }
                    %>
-                <div class="<%= columnText %> headline <%= noimage %> <%= belongToSection %>" data-vr-contentbox="">
+                <div class="<%= columnText %> headline <%= noimage %> <%= belongToSection %>" data-id="<%= news.id %>" data-vr-contentbox="">
                   <div class="authors byline byline-nopub"><span class="author"><em><%= news["source"] %></em></span></div>
                   <a class="parent-label <%= belongToSection %>" href="<%= sectionHref %>">
                   <%= news["cat_name"] %>
                   </a>
+                  <div class="userNewsBtn-container">
+                  <div class="userNewsBtn-wrapper">
+                    <div class="userNewsBtn hideBtnDiv">
+                      <i class="icon-double-angle-left icon-2x"></i>
+                      <button class="btn btn-mini btn-warning hideBtn" type="button" title="Ẩn tin này" data-id="<%= news.id %>">
+                      <i class="icon-trash icon-2x"></i>
+                      </button>
+                      <i class="icon-double-angle-left icon-2x"></i>
+                    </div>
+                  </div>
+                  </div>
                   <% 
                     var appSections = app.appDataModel.get("sections");
                     var sectionStr = "/" + news.section;
@@ -73,7 +84,6 @@
                         <li class="time"><span>1 hour, 51 minutes ago</span></li>
                         -->
                       </ul>
-                      <div class="user-feedback-btns"></div>
                     </div>
                   </a>
                 </div>

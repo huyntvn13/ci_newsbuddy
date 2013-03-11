@@ -146,8 +146,77 @@ define(['jquery', 'underscore', 'marionette', 'app', 'templates', 'newsContentHe
     events : {
       'click .ui-toggle-btn.grid-big': 'toggleGridList',
       'click .ui-toggle-btn.list-big': 'toggleGridList',
+      'click button.hideBtn': 'hideANews',
     },
     
+    hideANews: function(e) {
+      var newsID = $(e.currentTarget).data("id");
+      
+      // remove that news from model.data.news array
+      var data = this.model.get('data')
+      var foundIdx = -1;
+      for(var i=0, len=data.news.length; i<len; i++){
+        if(newsID == data.news[i].id){
+          foundIdx = i;
+          break;
+        }
+      }
+      if(foundIdx != -1){
+        data.news.splice(i, 1);
+      }
+      
+      // re-calculate first-column last-column
+      for(var i=0, len=data.news.length; i<len; i++){
+        var columnText = (i%2==0) ? 'first-column' : 'last-column';
+        var columnTextToRemove = (columnText=='last-column') ? 'first-column' : 'last-column';
+        var elemID = data.news[i].id;
+        var headlineElem = $('.headlines .headline[data-id="'+elemID+'"]');
+        if(!headlineElem.hasClass(columnText)){
+          headlineElem.removeClass(columnTextToRemove);
+          headlineElem.addClass(columnText);
+        }
+      }
+      
+      // the DOM elem displaying that news
+      var headlineElemSelector = '.headlines .headline[data-id="'+newsID+'"]';
+      var headlineElem = $(headlineElemSelector);
+      
+      if(this.model.get('viewType') == 'grid'){
+        headlineElem.css('overflow', 'hidden');
+        headlineElem.animate(
+        {
+          width: '0px',
+          height: '0px',
+        },
+        {
+          duration: 200,
+          easing: 'linear',
+          queue: false,
+          complete: function(){
+            headlineElem.css('display', 'none');
+          }
+        });
+      }else {
+        headlineElem.css({
+          'min-height': '0px',
+          'overflow': 'hidden',
+        });
+        headlineElem.animate(
+        {
+          height: '0',
+          'padding-top': '0',
+          'padding-bottom': '0',
+        },
+        {
+          duration: 200,
+          easing: 'linear',
+          queue: false,
+          complete: function(){
+            headlineElem.css('display', 'none');
+          }
+        });
+      }
+    },
     
     toListView: function() {
       this.model.set('viewType', 'list');
