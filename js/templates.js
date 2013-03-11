@@ -10,5 +10,6 @@ define(function(require){
     cardWrapSection     : require('tpl!templates/card-wrap-section.html'),
     cardWrapSectionData : require('tpl!templates/card-wrap-section-data.html'),
     overlayContent      : require('tpl!templates/overlay-content.html'),
+    overlaySearchResult : require('tpl!templates/overlay-search-result.html'),
   };
 });

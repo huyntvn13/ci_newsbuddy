@@ -3087,3 +3087,13 @@ article.asset.ui-loading {
   color: #666;
 }
 /***--- END ERROR Pages ---***/
+
+.search-results {
+  background:#333 url(../images/patterns/dark-noise.png) 0 0 repeat;color:#fff;
+  min-height:100%;
+  padding-top:80px;
+  position:relative;
+  overflow:hidden;
+  z-index:99;
+  width:100%
+}

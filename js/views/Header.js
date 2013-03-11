@@ -29,6 +29,8 @@ define([
     events: {
 			'click li.search.icon': 'toggleSearchForm',
 			'click span.cancel': 'toggleSearchForm',
+      'click .submit': 'submitSearchForm',
+      'keypress .text-input': 'enterToSubmitSearch',
 		},
     
     onRender: function() {    
@@ -41,6 +43,22 @@ define([
 			});
     },
 		
+    enterToSubmitSearch: function(event) {
+      if(event.keyCode == 13){
+        this.submitSearchForm();
+      }
+    },
+    
+    submitSearchForm: function(event) {
+      var keyword = $.trim($('.text-input').val());
+      if (keyword == "") {
+        return;
+      }
+      keyword = encodeURIComponent(keyword);
+      window.location.href="/search/" + keyword;
+      //alert(keyword);
+    },
+    
 		toggleSearchForm: function(){	
 			var val = $("#masthead").css("height");
 			var isSearchFormExpanded = (val == "0px") ? false : true;
