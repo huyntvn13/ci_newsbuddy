@@ -44,8 +44,12 @@ define([
     },
 		
     enterToSubmitSearch: function(event) {
-      if(event.keyCode == 13){
+      if(event.which == 13 || event.keyCode == 13){
         this.submitSearchForm();
+        if(event.keyCode == 13) {
+          event.preventDefault();
+          return false;
+        }
       }
     },
     
@@ -55,8 +59,8 @@ define([
         return;
       }
       keyword = encodeURIComponent(keyword);
-      window.location.href="/search/" + keyword;
-      //alert(keyword);
+      //window.location.href="/search/" + keyword;
+      alert(keyword);
     },
     
 		toggleSearchForm: function(){	

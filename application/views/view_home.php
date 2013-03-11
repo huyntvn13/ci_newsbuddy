@@ -29,6 +29,7 @@
 	<![endif]-->
 	<header id="header"></header>
   <div id="overlay-container"></div>
+  <div id="search-result-container"></div>
 	<article id="cards" class="cards">
 		<!--<div class="card-container"></div>-->
 		

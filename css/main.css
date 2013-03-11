@@ -3088,6 +3088,13 @@ article.asset.ui-loading {
 }
 /***--- END ERROR Pages ---***/
 
+#search-result-container {
+  display: none;
+}
+#search-result-container.show {
+  display: block;
+  width: 100%;
+}
 .search-results {
   background:#333 url(../images/patterns/dark-noise.png) 0 0 repeat;color:#fff;
   min-height:100%;
@@ -3095,5 +3102,6 @@ article.asset.ui-loading {
   position:relative;
   overflow:hidden;
   z-index:99;
-  width:100%
+  width:100%;
+  
 }

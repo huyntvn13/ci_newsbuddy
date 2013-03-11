@@ -339,7 +339,7 @@ define([
       appData: App.appDataModel,
     };
     App.searchResult.show(new OverlaySearchResult(viewOptions));
-    alert("call show search");
+    //alert("call show search");
   });
   
   vent.on('newsBuddy:show404Error', function() {
