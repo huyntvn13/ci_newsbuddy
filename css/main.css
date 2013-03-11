@@ -379,7 +379,7 @@ p {
 }
 #masthead,#navbar {
 	margin:0 auto;
-	width:840px
+	width:868px;
 }
 @media only screen and (min-width:1150px) {
 	#masthead,#navbar {
@@ -395,7 +395,7 @@ p {
 	bottom: -40px;
 	color: #fff;
 	height: 40px;
-	margin: 0 0 0 -70px;
+	margin: 0 0 0 -65px;
 	padding: 0;
 	position: absolute;
 	top: auto;
@@ -403,7 +403,7 @@ p {
 }
 @media only screen and (min-width:1150px) {
 	#masthead .logo {
-    margin: 0 0 0 -32px;
+    margin: 0 0 0 -80px;
 	}
 }
 #search-form {
@@ -430,12 +430,12 @@ p {
 	white-space: nowrap;
 }
 #logo-link {
-	background: transparent url(../images/sprites/header-sprite.png) no-repeat -242px -183px;
+	background: transparent url(../images/sprites/header-logo.png) no-repeat -330px 0px;
 	display: block;
 	height: 29px;
 	margin-top: 5px;
 	text-decoration: none;
-	width: 150px;
+	width: 200px;
 	z-index: 9010;
 }
 .show-search #masthead .logo, #masthead .large {
@@ -444,10 +444,10 @@ p {
 	z-index: 9000;
 }
 .show-search #masthead #logo-link, #masthead .large #logo-link {
-	background-position: left -182px;
+	background-position: left 0px;
 	height: 47px;
 	margin-top: 16px;
-	width: 239px;
+	width: 324px;
 }
 #search-form form {
 	margin-top: 20px;
@@ -521,7 +521,7 @@ p {
 	border-left: 1px solid #141414;
 }
 #navbar .news {
-	margin-left: 90px;
+	margin-left: 136px;
 }
 @media only screen and (min-width:1150px) {
 	#navbar .news {
@@ -1229,7 +1229,7 @@ p {
 	top:-10px;
 	text-indent:105%;
 	white-space:nowrap;
-	width:240px
+	width:258px
 }
 .footer>nav>section.usat-meta ul {
 	list-style:none;
