@@ -12,6 +12,7 @@ define([
   'models/Breaking',
   'models/CardWrapSection',
   'models/OverlayContent',
+  'models/OverlaySearchResult',
   'collections/CardWrapSectionCollection',
   'views/Header',
   'views/UserIcon',
@@ -20,8 +21,9 @@ define([
   'views/CardsNav',
   'views/CardContainer',
   'views/OverlayContent',
+  'views/OverlaySearchResult',
   
-], function($, _, Marionette, vent, NewsBuddyModel, UserModel, BreakingModel, CardWrapSectionModel, OverlayContentModel, CardWrapSectionCollection, Header, UserIcon, Breaking, Footer, CardsNav, CardContainer, OverlayContent){
+], function($, _, Marionette, vent, NewsBuddyModel, UserModel, BreakingModel, CardWrapSectionModel, OverlayContentModel, OverlaySearchResultModel, CardWrapSectionCollection, Header, UserIcon, Breaking, Footer, CardsNav, CardContainer, OverlayContent, OverlaySearchResult){
   
   // override to set how view's el is attached (prepend, append)
   Marionette.Region.prototype.show = function(view, type){
@@ -81,6 +83,8 @@ define([
     breaking        : '#breaking',
     
     overlay         : '#overlay-container',
+    
+    searchResult    : '#search-result-container',
     
     cardsNav        : '#cards #cards-nav',
     cards           : '#cards',
@@ -320,6 +324,22 @@ define([
       appData: App.appDataModel,
     };
     App.overlay.show(new OverlayContent(viewOptions));
+  });
+  
+  vent.on('newsBuddy:showSearchResult', function(keyword) {
+    
+    App.appDataModel.set('showingSection', false);
+    App.appDataModel.set('showingNews', false);
+    App.appDataModel.set('showingError', false);
+    var searchModel = new OverlaySearchResultModel({
+      //keyword: keyword,
+    });
+    var viewOptions = {
+      model : searchModel,
+      appData: App.appDataModel,
+    };
+    App.searchResult.show(new OverlaySearchResult(viewOptions));
+    alert("call show search");
   });
   
   vent.on('newsBuddy:show404Error', function() {

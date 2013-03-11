@@ -10,6 +10,11 @@ define(['vent'], function (vent) {
       vent.trigger('newsBuddy:checkToChangeSection', section);
     }, 
     
+    searchNews : function(keyword) {
+      console.log("keyword: " + keyword);
+      vent.trigger('newsBuddy:showSearchResult', keyword);
+    },
+    
     handleSubsection : function(section, subSection) {
       console.log("requested section: " + section + ", subSection: " + subSection)
       vent.trigger('newsBuddy:checkToChangeSection', section, subSection);
