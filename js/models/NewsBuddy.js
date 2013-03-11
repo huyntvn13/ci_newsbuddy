@@ -5,8 +5,8 @@ define(['jquery', 'underscore', 'backbone'],function($, _, Backbone){
   return Backbone.Model.extend({
     defaults: {
       lang: 'vi',
-      siteName: 'NewsBuddy',
-      siteNameFull: 'NewsBuddy.VN',
+      siteName: 'viTAN',
+      siteNameFull: 'viTAN.vn',
       
       canAnimateFromNowOn: false,
       visualGap: 0,
