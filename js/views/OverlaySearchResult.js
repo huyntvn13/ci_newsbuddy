@@ -34,6 +34,8 @@ define([
 		},
     
     onRender: function() {
+      this.model.requestSearchData();
+      console.log("onrender");
     },
   });
 

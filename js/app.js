@@ -342,7 +342,7 @@ define([
       $('article#cards').css('display', 'none');
     
     var searchModel = new OverlaySearchResultModel({
-      //keyword: keyword,
+      keyword: keyword,
     });
     var viewOptions = {
       model : searchModel,
