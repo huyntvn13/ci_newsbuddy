@@ -308,7 +308,9 @@ function getSearchResult() {
   $app = \Slim\Slim::getInstance();
   global $db;
   $data = (object) null;
+ 
   $keyword = $app->request()->params('keyword');
+  $keyword = urldecode($keyword);
   $db_connect = dbConnect();
   $keyword = mysql_real_escape_string($keyword, $db_connect);
   
