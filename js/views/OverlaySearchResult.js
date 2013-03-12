@@ -18,7 +18,7 @@ define([
     },
 
     ui : {
-      //searchIcon: 'li.search.icon',
+      
     },
 
     modelEvents: {
@@ -27,6 +27,8 @@ define([
     
     dataChanged: function() {
       console.log("on datachange");
+      this.model.set('isLoading', false);
+      this.render();
     },
 
     events: {
@@ -34,8 +36,7 @@ define([
 		},
     
     onRender: function() {
-      this.model.requestSearchData();
-      console.log("onrender");
+      
     },
   });
 

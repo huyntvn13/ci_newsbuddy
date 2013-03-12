@@ -6,6 +6,7 @@ define(['jquery', 'underscore', 'backbone'],function($, _, Backbone){
     defaults: {
       viewType: "grid",
       keyword: "",
+      isLoading: true,
     },
 
     initialize : function() {
@@ -19,7 +20,7 @@ define(['jquery', 'underscore', 'backbone'],function($, _, Backbone){
     requestSearchData: function() {
       var self = this;
       var requestValues = {
-        keyword: self.get('keyword'),
+        keyword: encodeURIComponent(self.get('keyword')),
       };
       var apiURL = '/api/search';
       $.ajax({
