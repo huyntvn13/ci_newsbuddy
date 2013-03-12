@@ -1,6 +1,6 @@
 /*global define*/
 
-define(['jquery', 'underscore', 'marionette', 'app', 'templates', 'newsContentHelper', 'readmore', 'throttledebounce'], function ($, _, Marionette, App, templates) {
+define(['jquery', 'underscore', 'marionette', 'app', 'vent', 'templates', 'helper', 'newsContentHelper', 'readmore', 'throttledebounce'], function ($, _, Marionette, App, vent, templates, Helper) {
   "use strict";
 
   return Marionette.CompositeView.extend({
@@ -25,6 +25,13 @@ define(['jquery', 'underscore', 'marionette', 'app', 'templates', 'newsContentHe
         $('head title').html('Loading... - ' + app.appDataModel.get('siteNameFull'));
         this.template = templates.cardWrapSection;
       }else{
+        // create visible news array
+        var visibleNewsArr = [];
+        for(var i=0, len=this.model.get('data').news.length; i<len; i++){
+          visibleNewsArr.push(true);
+        }
+        this.model.set('visibleNewsArr', visibleNewsArr);
+      
         var timeNowObj = new Date($.now()),
         h = timeNowObj.getHours(), // 0-24 format
         m = timeNowObj.getMinutes();
@@ -41,7 +48,9 @@ define(['jquery', 'underscore', 'marionette', 'app', 'templates', 'newsContentHe
     },
 
     initialize : function(options) {
-      this.listenTo(this.model, 'change', this.render, this);
+      var self = this;
+      this.listenTo(this.model, 'change:data', this.render, this);
+      this.listenTo(this.model, 'change:restoringNews', this.restoreNewsInView);
       this.cardSizes = options.cardSizes;
       this.minWindowWidth = options.minWindowWidth;
       this.initSection = options.initSection;
@@ -149,11 +158,94 @@ define(['jquery', 'underscore', 'marionette', 'app', 'templates', 'newsContentHe
       'click button.hideBtn': 'hideANews',
     },
     
+    restoreNewsInView: function(){
+      var restoreID = this.model.get('restoringNews');
+      if(restoreID){
+        // re-calculate first-column last-column
+        var data = this.model.get('data');
+        var visibleNewsArr = this.model.get('visibleNewsArr');
+        var runner = 0;
+        for(var i=0, len=data.news.length; i<len; i++){
+          if(visibleNewsArr[i]){
+            var columnText = (runner%2==0) ? 'first-column' : 'last-column';
+            var columnTextToRemove = (columnText=='last-column') ? 'first-column' : 'last-column';
+            var elemID = data.news[i].id;
+            var headlineElem = $('.headlines .headline[data-id="'+elemID+'"]');
+            if(!headlineElem.hasClass(columnText)){
+              headlineElem.removeClass(columnTextToRemove);
+              headlineElem.addClass(columnText);
+            }
+            runner++;
+          }
+        }
+        
+        // the DOM elem displaying that news
+        var headlineElemSelector = '.headlines .headline[data-id="'+restoreID+'"]';
+        var headlineElem = $(headlineElemSelector);
+        
+        if(this.model.get('viewType') == 'grid'){
+          headlineElem.css('display', 'block');
+          headlineElem.animate(
+          {
+            width: '344px',
+            height: '243px',
+          },
+          {
+            duration: 200,
+            easing: 'linear',
+            queue: false,
+            complete: function(){
+              headlineElem.attr('style', '');
+            }
+          });
+        }else {
+          headlineElem.css('display', 'block');
+          headlineElem.animate(
+          {
+            height: '81px',
+            'padding': '20px',
+          },
+          {
+            duration: 200,
+            easing: 'linear',
+            queue: false,
+            complete: function(){
+              headlineElem.attr('style', '');
+            }
+          });
+        }
+      
+        this.model.set('restoringNews', false);
+      }
+    },
+    
     hideANews: function(e) {
       var newsID = $(e.currentTarget).data("id");
       
+      // send request to server
+      var apiURL = '../api/hidenews/' + newsID;
+      $.ajax({
+        url: apiURL,
+        type: 'POST',
+        dataType: "json",
+        success: function(res) { 
+          if(res.result) { // true: succeed
+            var notificationContent = "Ẩn tin thành công. Nếu là do ấn nhầm, bạn có thể \
+              <button class='btn btn-primary btn-mini restore-news-btn' data-id='" + res.newsInfo.id + "' title='Khôi phục tin \"" + res.newsInfo.title + "\"'>\
+                <i class='icon-reply'></i>\
+                &nbsp;Khôi phục\
+              </button>";
+            Helper.showNotification(notificationContent, "success", true);
+          }
+          else { // failed
+            Helper.showNotification("Đã xảy ra lỗi trong quá trình ẩn tin!");
+          }
+        }
+      });
+      
       // remove that news from model.data.news array
-      var data = this.model.get('data')
+      var data = this.model.get('data');
+      var visibleNewsArr = this.model.get('visibleNewsArr');
       var foundIdx = -1;
       for(var i=0, len=data.news.length; i<len; i++){
         if(newsID == data.news[i].id){
@@ -162,18 +254,22 @@ define(['jquery', 'underscore', 'marionette', 'app', 'templates', 'newsContentHe
         }
       }
       if(foundIdx != -1){
-        data.news.splice(i, 1);
+        visibleNewsArr[foundIdx] = false;
       }
       
       // re-calculate first-column last-column
+      var runner = 0;
       for(var i=0, len=data.news.length; i<len; i++){
-        var columnText = (i%2==0) ? 'first-column' : 'last-column';
-        var columnTextToRemove = (columnText=='last-column') ? 'first-column' : 'last-column';
-        var elemID = data.news[i].id;
-        var headlineElem = $('.headlines .headline[data-id="'+elemID+'"]');
-        if(!headlineElem.hasClass(columnText)){
-          headlineElem.removeClass(columnTextToRemove);
-          headlineElem.addClass(columnText);
+        if(visibleNewsArr[i]){
+          var columnText = (runner%2==0) ? 'first-column' : 'last-column';
+          var columnTextToRemove = (columnText=='last-column') ? 'first-column' : 'last-column';
+          var elemID = data.news[i].id;
+          var headlineElem = $('.headlines .headline[data-id="'+elemID+'"]');
+          if(!headlineElem.hasClass(columnText)){
+            headlineElem.removeClass(columnTextToRemove);
+            headlineElem.addClass(columnText);
+          }
+          runner++;
         }
       }
       

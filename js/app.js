@@ -14,6 +14,7 @@ define([
   'models/OverlayContent',
   'models/OverlaySearchResult',
   'collections/CardWrapSectionCollection',
+  'views/NotificationsBottomRight',
   'views/Header',
   'views/UserIcon',
   'views/Breaking',
@@ -23,7 +24,7 @@ define([
   'views/OverlayContent',
   'views/OverlaySearchResult',
   
-], function($, _, Marionette, vent, NewsBuddyModel, UserModel, BreakingModel, CardWrapSectionModel, OverlayContentModel, OverlaySearchResultModel, CardWrapSectionCollection, Header, UserIcon, Breaking, Footer, CardsNav, CardContainer, OverlayContent, OverlaySearchResult){
+], function($, _, Marionette, vent, NewsBuddyModel, UserModel, BreakingModel, CardWrapSectionModel, OverlayContentModel, OverlaySearchResultModel, CardWrapSectionCollection, DefaultNotifications, Header, UserIcon, Breaking, Footer, CardsNav, CardContainer, OverlayContent, OverlaySearchResult){
   
   // override to set how view's el is attached (prepend, append)
   Marionette.Region.prototype.show = function(view, type){
@@ -81,6 +82,7 @@ define([
     header          : 'header#header',
     userIcon        : 'li.user.icon',
     breaking        : '#breaking',
+    notifications   : '#default-notifications-wrapper',
     
     overlay         : '#overlay-container',
     
@@ -128,6 +130,9 @@ define([
     
     // cardsNav
     App.cardsNav.show(new CardsNav(viewOptions));
+    
+    // notifications
+    App.notifications.show(new DefaultNotifications(viewOptions));
 
     //App.appDataModel.fetch();
   });
@@ -269,7 +274,7 @@ define([
     $('article#cards').css('display', '');
     $('body').removeClass('noscroll');
     
-    var currentSection = App.appDataModel.get('currentSection')
+    var currentSection = App.appDataModel.get('currentSection');
     var wrap = App.wraps.getWrap(section);
     // backup old subSection value of this wrap
     var subSectionOldValue = wrap.get('subSection');
@@ -366,6 +371,19 @@ define([
       appData: App.appDataModel,
     };
     App.overlay.show(new OverlayContent(viewOptions));
+  });
+  
+  vent.on('newsBuddy:refreshCurrentSection', function() {
+    var currentSection = App.appDataModel.get('currentSection');
+    var wrap = App.wraps.getWrap(currentSection);
+    wrap.refreshSection();
+  });
+  
+  /*** vent: cardWrapSection ***/
+  vent.on('cardWrapSection:restoreNews', function(newsID) {
+    var currentSection = App.appDataModel.get('currentSection');
+    var wrap = App.wraps.getWrap(currentSection);
+    wrap.restoreNews(newsID);
   });
   
 	return App;

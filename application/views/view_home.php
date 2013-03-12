@@ -18,6 +18,7 @@
 	<link rel="stylesheet" href="<?php echo site_url(); ?>css/bootstrap-notify-styles/alert-bangtidy.css" />
 	<link rel="stylesheet" href="<?php echo site_url(); ?>css/bootstrap-notify-styles/alert-blackgloss.css" />
 	<link rel="stylesheet" href="<?php echo site_url(); ?>css/font-awesome.min.css" />
+	<link rel="stylesheet" href="<?php echo site_url(); ?>css/mini-fixes.css" />
 	<link rel="stylesheet" href="<?php echo site_url(); ?>css/main.css" />
 	<script src="<?php echo site_url(); ?>js/libs/modernizr.js"></script>
 </head>
@@ -38,7 +39,7 @@
     <div id="cards-nav"></div>
 	</article>
   
-  <div class="notifications bottom-right" id="default-notify"></div>
+  <div id="default-notifications-wrapper"></div>
 	
 	<!-- build:js scripts/amd-app.js -->
 	<script data-main="<?php echo site_url(); ?>js/config" src="<?php echo site_url(); ?>js/libs/require_2.1.4-jquery_1.9.0.js"></script>

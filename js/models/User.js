@@ -1,5 +1,5 @@
   
-define(['jquery', 'underscore', 'backbone'],function($, _, Backbone){
+define(['jquery', 'underscore', 'backbone', 'vent'],function($, _, Backbone, vent){
   'use strict';
 
   return Backbone.Model.extend({
@@ -34,6 +34,9 @@ define(['jquery', 'underscore', 'backbone'],function($, _, Backbone){
     
     initialize : function() {
       this.retrieveStatus();
+      this.listenTo(this, 'change:authenticated', function(){
+        vent.trigger('newsBuddy:refreshCurrentSection');
+      });
     },
   });
 

@@ -42,6 +42,7 @@
                   <a class="parent-label <%= belongToSection %>" href="<%= sectionHref %>">
                   <%= news["cat_name"] %>
                   </a>
+                  <% if(app.userModel.get("authenticated")) { %>
                   <div class="userNewsBtn-container">
                   <div class="userNewsBtn-wrapper">
                     <div class="userNewsBtn hideBtnDiv">
@@ -53,6 +54,7 @@
                     </div>
                   </div>
                   </div>
+                  <% } %>
                   <% 
                     var appSections = app.appDataModel.get("sections");
                     var sectionStr = "/" + news.section;

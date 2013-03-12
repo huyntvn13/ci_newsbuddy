@@ -60,8 +60,51 @@
   };
 
   Notification.prototype.show = function () {
-    if (this.options.fadeOut.enabled)
-      this.$note.delay(this.options.fadeOut.delay || 3000).fadeOut('slow', $.proxy(Notification.onClose, this));
+    if (this.options.fadeOut.enabled){
+      /*** Original version ***/
+      //this.$note.delay(this.options.fadeOut.delay || 3000).fadeOut('slow', $.proxy(Notification.onClose, this));
+      /*** End Original version ***/
+      
+      /*** Modified version ***/
+      // Desirable behaviours:
+      // If not hovered => this.$note will be fadeout after timeout
+      // hover => clearTimeout
+      // mouseout => reassign timeout
+      var self = this;
+      
+      var timeout = this.options.fadeOut.delay || 3000;
+      var timer;
+      var fadeFunc = function(){
+        self.$note.fadeOut('slow', $.proxy(Notification.onClose, self));
+      };
+      timer = setTimeout(function() {
+        fadeFunc();
+      }, timeout);
+      
+      this.$note.hover(function(){
+        if(timer) {
+          clearTimeout(timer);
+        }
+      });
+      // hover all children buttons => also clearTimeout
+      for (var i = 0; i < this.$note.children('button').length; i++){
+        this.$note.children('button')[i].onmouseover = function(){
+          if(timer) {
+            clearTimeout(timer);
+          }
+        }
+      };
+      
+      this.$note.mouseout(function(){
+        if(timer) {
+          clearTimeout(timer);
+        }
+        timer = setTimeout(function() {
+          fadeFunc();
+        }, timeout);
+      });
+    }
+    /*** END Modified version ***/
 
     this.$element.append(this.$note);
     this.$note.alert();

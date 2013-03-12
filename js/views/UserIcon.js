@@ -235,6 +235,7 @@ define(['jquery', 'marionette','templates', 'app', 'bootbox', 'helper', 'bootstr
       /* destroy session */
       $.cookie('udt_e', null);
       $.cookie('udt_r', null);
+      app.userModel.set('authenticated', false);
       this.hideLogoutWrap();
       console.log('Done logging out.');
     },

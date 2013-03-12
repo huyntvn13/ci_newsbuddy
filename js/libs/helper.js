@@ -6,11 +6,13 @@
  
 define(['jquery'], function ($) {
   return {
-    showNotification: function (messageText, typeStyle, selector) {
+    showNotification: function (messageText, typeStyle, htmlVal, selector) {
       typeStyle = typeof typeStyle !== 'undefined' ? typeStyle : 'blackgloss';
       selector = typeof selector !== 'undefined' ? selector : '#default-notify';
+      htmlVal = typeof htmlVal !== 'undefined' ? htmlVal : false;
+      var htmlContent = (htmlVal) ? messageText : false;
       $(selector).notify({
-        message: { text: messageText },
+        message: { html: htmlContent, text: messageText },
         type: typeStyle,
       }).show();
     },

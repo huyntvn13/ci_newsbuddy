@@ -1,6 +1,7 @@
 define(function(require){
   "use strict";
   return {
+    blank               : require('tpl!templates/blank.html'),
     header              : require('tpl!templates/header.html'),
     userIcon            : require('tpl!templates/userIcon.html'),
     breaking            : require('tpl!templates/breaking.html'),

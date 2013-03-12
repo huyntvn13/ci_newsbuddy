@@ -18,6 +18,31 @@ define(['jquery', 'underscore', 'backbone'],function($, _, Backbone){
       return '../api/section/' + this.get("sectionName");
     },
     
+    restoreNews: function(newsID){
+      var visibleNewsArr = this.get('visibleNewsArr');
+      var data = this.get('data');
+      var foundIdx = -1;
+      for(var i=0, len=data.news.length; i<len; i++){
+        if(newsID == data.news[i].id){
+          foundIdx = i;
+          break;
+        }
+      }
+      if(foundIdx != -1){ // found
+        visibleNewsArr[foundIdx] = true;
+        this.set('restoringNews', newsID);
+      }
+    },
+    
+    refreshSection: function() {
+      // reload data then scroll to top
+      this.set('loading', true);
+      this.requestSectionData();
+      $('html, body').animate({
+         scrollTop: 0
+      }, 0);
+    },
+    
     requestSectionData: function() {
       var self = this;
       var apiURL = '';
