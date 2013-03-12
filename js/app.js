@@ -262,6 +262,8 @@ define([
     // remove Overlay, if being opened
     App.overlay.reset();
     $('#overlay-container').removeClass('show');
+    App.searchResult.reset();
+    $('#search-result-container').removeClass('show');
     // + display article.cards, again (cause maybe it was hide when we viewed news)
     // + re-enable scrolling
     $('article#cards').css('display', '');
@@ -331,6 +333,14 @@ define([
     App.appDataModel.set('showingSection', false);
     App.appDataModel.set('showingNews', false);
     App.appDataModel.set('showingError', false);
+    $('#search-result-container').addClass('show');
+      $('#search-result-container').css('height', '5px');
+      $("#search-result-container").animate({
+        height: "800px",
+        opacity: 1,
+      }, 1000 );
+      $('article#cards').css('display', 'none');
+    
     var searchModel = new OverlaySearchResultModel({
       //keyword: keyword,
     });

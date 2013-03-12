@@ -59,7 +59,6 @@ define([
         return;
       }
       keyword = encodeURIComponent(keyword);
-      //window.location.href="/search/" + keyword;
       app.router.navigate('/search/' + keyword, {trigger: true});
     },
     
