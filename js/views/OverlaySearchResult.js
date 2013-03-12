@@ -26,7 +26,7 @@ define([
     },
     
     dataChanged: function() {
-      
+      console.log("on datachange");
     },
 
     events: {
