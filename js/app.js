@@ -342,13 +342,14 @@ define([
       $('article#cards').css('display', 'none');
     
     var searchModel = new OverlaySearchResultModel({
-      keyword: keyword,
+      keyword: decodeURIComponent(keyword),
     });
     var viewOptions = {
       model : searchModel,
       appData: App.appDataModel,
     };
     App.searchResult.show(new OverlaySearchResult(viewOptions));
+    searchModel.requestSearchData();
     //alert("call show search");
   });
   

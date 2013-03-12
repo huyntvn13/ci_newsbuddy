@@ -1,1 +1,17 @@
- <%= data["total"] %> ket qua
+<% if (isLoading) { %>
+<div class="results">
+  <div class="more-results">
+    
+  </div>
+</div>
+<% } else { %>
+<div class="summary grid">
+  <div class="inner">
+    <div class="results-count"><%= data["total"] %></div>
+    <div class="search-term">kết quả ứng với <span class="term">"<%= keyword %>"</span>
+    </div>
+    
+  </div>
+</div>
+ ket qua
+<% } %>

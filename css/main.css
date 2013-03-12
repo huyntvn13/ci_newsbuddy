@@ -3097,6 +3097,7 @@ article.asset.ui-loading {
 }
 /***--- END ERROR Pages ---***/
 
+/** --- SEARCH PAGE ---***/
 #search-result-container {
   display: none;
 }
@@ -3113,7 +3114,128 @@ article.asset.ui-loading {
   z-index:99;
   width:100%;  
 }
+.results .more-results {
+  background:transparent url(../images/preloaders/windmill-loader_2x_dark.gif) no-repeat 49% 48%;
+  min-height:94px
+}
 
+.summary {
+  background:#262626;
+  background:-moz-linear-gradient(#292929,#1b1b1b);
+  background:-ms-linear-gradient(#292929,#1b1b1b);
+  background:-o-linear-gradient(#292929,#1b1b1b);
+  background:-webkit-linear-gradient(#292929,#1b1b1b);
+  background:linear-gradient(#292929,#1b1b1b);
+  border-bottom:1px solid #000;border-top:1px solid #343434;
+  box-shadow:0 -1px 0 #000,inset 0 -1px 3px #181818;
+  height:48px;
+  position:fixed;
+  z-index:100;
+  margin:0 auto;
+  width:100%}
+.summary .inner {
+  height:48px;
+  margin:0 auto;
+  -webkit-transition:width 250ms;
+  -moz-transition:width 250ms;
+  -o-transition:width 250ms;
+  transition:width 250ms
+}
+.summary.grid .inner {
+  width:840px
+}
+.summary .results-count {
+  color:#666;
+  float:left;
+  font-size:40px;
+  font-weight:700;
+  line-height:49px;
+  text-shadow:0 1px 1px #000
+}
+.summary .search-term {
+  color:#666;
+  float:left;
+  font-size:22px;
+  padding:9px 0 0 9px;
+  text-shadow:0 1px 1px #000
+}
+.summary .search-term .term {
+  color:#fff;
+  font-weight:700
+}
+.summary .btn-bar {
+  padding-top:7px;
+  float:right
+}
+.summary .grid-btn,.summary .list-btn {
+  width:88px
+}
+.summary .grid-btn:before,.summary .list-btn:before {
+  background:url(../images/sprites/ui-sprite.png) 0 0 no-repeat;
+  content:'';
+  display:inline-block;
+  position:relative;
+  height:10px;
+  margin-right:5px;
+  overflow:hidden;
+  width:12px
+}
+.summary .grid-btn:before {
+  width:11px;
+  height:9px;
+  margin-top:10px;
+  background-position:-284px -25px
+}
+.summary .grid-btn.active:before {
+  background-position:-284px -6px
+}
+.summary .list-btn:before {
+  background-position:-305px -24px
+}
+.summary .list-btn.active:before {
+  background-position:-305px -5px
+}
+.summary .ui-btn.close {
+  width:18px
+}
+.summary .ui-btn {
+  float:left;
+  margin-left:8px
+}
+.browser-shadow {
+  background:transparent url(../images/dropshadows/win-bot.png) repeat-x 0 0;
+  bottom:0;
+  height:31px;
+  position:fixed;
+  width:100%;
+  z-index:100
+}
+@media only screen and (min-width:1150px) {
+  .results .inner{
+    width:959px
+  }
+  .summary.grid .inner {
+    width:1080px
+  }
+  .view-list .inner {
+    width:958px
+  }
+  .summary.list .inner {
+    width:1080px
+  }
+}
+@media only screen and (min-width:1250px) {
+  .results .inner {
+    width:1198px
+  }
+  .summary.grid .inner {
+    width:1202px
+  }
+  .summary .inner,.summary.list .inner {
+    width:1202px
+  }
+}
+/***--- END SEARCH PAGE ---***/
 
 /*** user-feedback-btns ***/
 .headlines .headline .userNewsBtn-container {
