@@ -11,7 +11,8 @@ define([
     template : templates.overlaySearchResult,
     tagName: 'div',
     //id: 'search-result',
-    className: 'search-results',
+    className: 'search-results ui-dark',
+    templateHelpers : newsContentHelper,
     
     initialize : function(options) {
       //this.appData = options.appData;
