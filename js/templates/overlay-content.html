@@ -86,12 +86,12 @@
   %>
   <div class="previous-wrap <% if(!prevHref){ %> disabled <% } %>">
     <% if(prevHref) { %>
-    <a class="previous" href="<%= prevHref %>" data-ht="articlearrowprevious"></a>
+    <a class="previous" href="<%= prevHref %>" title="<%= prevNews.title %>" data-ht="articlearrowprevious"></a>
     <% } %>
   </div>
   <div class="next-wrap <% if(!nextHref){ %> disabled <% } %>">
     <% if(nextHref) { %>
-    <a class="next" href="<%= nextHref %>" data-ht="articlearrownext"></a>
+    <a class="next" href="<%= nextHref %>" title="<%= nextNews.title %>" data-ht="articlearrownext"></a>
     <% } %>
   </div>
 </div>
