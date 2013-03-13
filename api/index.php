@@ -320,7 +320,7 @@ function getSearchResult() {
                   news_links.image_fullsize image, news_categories.name_abbr cat_abbr, 
                   news_categories.name_short cat_name, news_sources.`name` source, news_sources.alias source_alias')
                 ->where('news_links.title LIKE ?', "%$keyword%")
-                ->order('news_links.pubDate desc')->limit(10, 0);
+                ->order('news_links.pubDate desc')->limit(12, 0);
   $news = array();
   foreach ($news_links as $news_link) {
       $row = array();        
@@ -336,6 +336,19 @@ function getSearchResult() {
                 ->where('news_links.title LIKE ?', "%$keyword%")
                 ->count('*');
   $data->total = $total;
+  
+  $catParentRaw = $db->news_categories()->select("id, name_abbr, name, name_short, parent_abbr");
+  $catParent = array();
+  foreach ($catParentRaw as $cat){
+    $content = (object) null;
+    $content->id = $cat['id'];
+    $content->name_abbr = $cat['name_abbr'];
+    $content->name = $cat['name'];
+    $content->name_short = $cat['name_short'];
+    $content->parent_abbr = $cat['parent_abbr'];
+    $catParent[$cat['name_abbr']] = $content;
+  }
+  $data->catParent = $catParent;
   echo json_encode($data);
 }
 

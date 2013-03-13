@@ -10,8 +10,75 @@
     <div class="results-count"><%= data["total"] %></div>
     <div class="search-term">kết quả ứng với <span class="term">"<%= keyword %>"</span>
     </div>
-    
+    <div class="btn-bar">
+      <span class="ui-btn grid-btn active">Grid</span>
+      <span class="ui-btn list-btn">List</span>
+    </div>
   </div>
 </div>
- ket qua
+<div class="results view-grid">
+  <div class="inner">
+    <div class="list-content">
+      <ul class="clearfix search-results-list">
+        <% for(var i=0, len=data["news"].length; i<len; i++){
+          var news = data["news"][i]; 
+          
+          var noimage = (news["image"] == "") ? "noimage" : "";
+
+          var parentAbbr = data["catParent"][news["cat_abbr"]]["parent_abbr"];
+          var belongToSection = (parentAbbr == "") ? data["catParent"][news["cat_abbr"]]["name_abbr"] : parentAbbr;
+
+          var sectionHref = "";
+          if(parentAbbr == ""){
+             sectionHref = "/" + belongToSection;
+          }else {
+             sectionHref = "/" + belongToSection + "/" + news["cat_abbr"];
+          }
+        %>
+        <% 
+          var appSections = app.appDataModel.get("sections");
+          var sectionStr = "/" + news.section;
+          if($.inArray(news.cat_abbr, appSections) == -1){
+            sectionStr += "/" + news.cat_abbr;
+          }
+          sectionStr += "/" + news.source_alias + "/" + convertToSeoFriendlyUrl(news.title) + "/" + news.id;
+        %>
+        <li class="text search-result-item">
+          <a class="parent-label <%= belongToSection %>" href="<%= sectionHref %>">
+            <%= news["cat_name"] %>
+          </a>
+          <a href="<%= sectionStr %>" data-ht="search_results_text_4" class="search-result-item-link">
+            <div class="front">
+              <figure class="search-result-figure">
+                <img class="search-result-image" src="<%= news['image'] %>">
+              </figure>
+              <p class="meta">
+                <span class="date-created meta-info-text">Mar 11, 2013</span>
+              </p>
+              <h3 class="search-result-title search-results-headline">
+                <%= news["title"] %>
+              </h3>
+              <p class="text">
+                <%= news["description"] %>            
+              </p>
+              <div class="clearleft"></div>              
+            </div>
+            <div class="back">
+              <h3 class="search-result-title-back search-results-headline">
+                <%= news["title"] %>
+              </h3>
+              <p class="text">
+                <%= news["description"] %>            
+              </p>
+              <p class="meta">
+                <span class="byline meta-info-text"><%= news["source"] %></span>
+              </p>
+            </div>
+          </a>
+        </li>
+      <% } %>
+      </ul>      
+    </div>
+  </div>
+</div>
 <% } %>
