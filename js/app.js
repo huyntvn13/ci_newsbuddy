@@ -230,7 +230,7 @@ define([
   */
   var windowOnScroll = function(){
     var scrollValue = $(window).scrollTop();
-    if(App.appDataModel.get('showingSection')){
+    if(App.appDataModel.get('showingView') == 'section'){
       App.appDataModel.set('currentScrollTopValue', scrollValue);
       //console.log("updated scrolling value " + scrollValue);
     }
@@ -260,9 +260,7 @@ define([
     }
     
     // update status showingSection, showingNews, showingError
-    App.appDataModel.set('showingSection', true);
-    App.appDataModel.set('showingNews', false);
-    App.appDataModel.set('showingError', false);
+    App.appDataModel.set('showingView', 'section');
   
     // remove Overlay, if being opened
     App.overlay.reset();
@@ -318,9 +316,7 @@ define([
   });
   
   vent.on('newsBuddy:showNewsOverlay', function(section, subSection, source, title, id) {
-    App.appDataModel.set('showingSection', false);
-    App.appDataModel.set('showingNews', true);
-    App.appDataModel.set('showingError', false);
+    App.appDataModel.set('showingView', 'news');
     
     var newsModel = new OverlayContentModel({
       overlayType: 'news',
@@ -335,9 +331,7 @@ define([
   
   vent.on('newsBuddy:showSearchResult', function(keyword) {
     
-    App.appDataModel.set('showingSection', false);
-    App.appDataModel.set('showingNews', false);
-    App.appDataModel.set('showingError', false);
+    App.appDataModel.set('showingView', 'search');
     $('#search-result-container').addClass('show');
       $('#search-result-container').css('height', '5px');
       $("#search-result-container").animate({
@@ -359,9 +353,7 @@ define([
   });
   
   vent.on('newsBuddy:show404Error', function() {
-    App.appDataModel.set('showingSection', false);
-    App.appDataModel.set('showingNews', false);
-    App.appDataModel.set('showingError', true);
+    App.appDataModel.set('showingView', 'error');
     App.appDataModel.set('errorType', '404');
     
     var errorModel = new OverlayContentModel({

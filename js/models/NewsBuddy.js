@@ -14,11 +14,14 @@ define(['jquery', 'underscore', 'backbone'],function($, _, Backbone){
       animatingSectionSwitching: false,
       currentScrollTopValue: 0,
       
-      showingSection: false,
-      showingNews: false,
-      showingError: false,
+      showingView: false, // maybe: 'news', 'section', 'error', 'search'
       errorType: "404", // page not found
       
+      /* for using with OverlayContent: animation type of overlay content: scale-up(default), or next, prev animation (next news, previous news) */
+      /* current not being used, using only default scale-up animation
+      // click next, previous => slide, enter news directly => scale up
+      newsAnimationType: false, // 'next', 'prev', false = 'scaleup'
+      */
       
       currentSection: 'null',
       sections: ['home', 'news', 'money', 'sports', 'technology', 'lifestyle', 'education', 'health', 'realestate'],

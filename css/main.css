@@ -2786,11 +2786,16 @@ article.asset.fixed {
 }
 .overlay-arrows.show .disabled {
 	background-image:url(../images/global/pagin-assetview-arrows.png);
-	opacity:.5
+	opacity:.5;
+  z-index: 1;
 }
 .overlay-arrows .next-wrap {
 	background-position:-64px 0;
 	right:0
+}
+.overlay-arrows .next-wrap.disabled {
+  background-position: 0px -98px;
+  right: -8px;
 }
 .lt-ie9 .overlay-arrows .next-wrap.disabled {
 	background-position:-64px -242px

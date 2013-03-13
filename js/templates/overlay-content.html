@@ -40,8 +40,60 @@
 </div>
 <% if(overlayType == "news"){ %>
 <div class="arrows overlay-arrows show">
-  <div class="previous-wrap "><a class="previous" href="" data-ht="articlearrowprevious"></a></div>
-  <div class="next-wrap "><a class="next" href="" data-ht="articlearrownext"></a></div>
+  <%  
+    var currentSection = app.appDataModel.get("currentSection");
+    var prevHref = false, nextHref = false;
+    if(currentSection != "null"){
+      var wrap = app.wraps.getWrap(currentSection);
+      
+      var wrapData = wrap.get("data");
+      var wrapVisibleNewsArr = wrap.get("visibleNewsArr");
+      var prevIdx = -1, thisIdx = -1, nextIdx = -1;
+      for(var i=0, len=wrapData.news.length; i<len; i++){
+        if(wrapVisibleNewsArr[i]){
+          if(newsID == wrapData.news[i].id){
+            thisIdx = i;
+          }
+          if(thisIdx == -1){
+            prevIdx = i;
+          }
+          if(thisIdx != -1 && nextIdx == -1 && i != thisIdx){
+            nextIdx = i;
+            break;
+          }
+        }
+      }
+      
+      var appSections = app.appDataModel.get("sections");
+      
+      if(prevIdx != -1){
+        var prevNews = wrapData.news[prevIdx];
+        prevHref = "/" + prevNews.section;
+        if($.inArray(prevNews.cat_abbr, appSections) == -1){
+          prevHref += "/" + prevNews.cat_abbr;
+        }
+        prevHref += "/" + prevNews.source_alias + "/" + convertToSeoFriendlyUrl(prevNews.title) + "/" + prevNews.id;
+      }
+      if(nextIdx != -1){
+        var nextNews = wrapData.news[nextIdx];
+        nextHref = "/" + nextNews.section;
+        if($.inArray(nextNews.cat_abbr, appSections) == -1){
+          nextHref += "/" + nextNews.cat_abbr;
+        }
+        nextHref += "/" + nextNews.source_alias + "/" + convertToSeoFriendlyUrl(nextNews.title) + "/" + nextNews.id;
+      }
+    }
+  %>
+  <div class="previous-wrap <% if(!prevHref){ %> disabled <% } %>">
+    <% if(prevHref) { %>
+    <a class="previous" href="<%= prevHref %>" data-ht="articlearrowprevious"></a>
+    <% } %>
+  </div>
+  <div class="next-wrap <% if(!nextHref){ %> disabled <% } %>">
+    <% if(nextHref) { %>
+    <a class="next" href="<%= nextHref %>" data-ht="articlearrownext"></a>
+    <% } %>
+  </div>
 </div>
 <%}%>
 <div class="film show"></div>

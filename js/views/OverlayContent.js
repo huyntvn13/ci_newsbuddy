@@ -4,11 +4,13 @@ define([
   'jquery',
   'marionette',
   'templates',
+  'newsContentHelper',
   ], function ($, Marionette, templates) {
   "use strict";
 
   return Marionette.ItemView.extend({
     template : templates.overlayContent,
+    templateHelpers : newsContentHelper,
     tagName: 'div',
     id: 'overlay',
     //className: 'fixed-wrap',
@@ -54,7 +56,24 @@ define([
     events: {
 			'click div.transition-wrap.zoomed-in': 'closeOverlayBox',
 			'click div.error': 'dontCloseOverlayBox',
+      'click .next': 'setAnimationType',
+      'click .previous': 'setAnimationType',
 		},
+    
+    setAnimationType: function(e) {
+      /* current not being used, using only default scale-up animation
+      if($(e.target).hasClass('next')){
+        app.appDataModel.set('newsAnimationType', 'next');
+      }else { // previous
+        app.appDataModel.set('newsAnimationType', 'prev');
+      }
+      */
+      
+      var href = $(e.target).attr('href');
+      app.router.navigate(href, {trigger: true});
+    
+      return false;
+    },
     
     dontCloseOverlayBox: function() {
       return false;
@@ -84,14 +103,15 @@ define([
           queue: false,
           complete: function(){
             app.router.navigate(backToPath, {trigger: true});
+            
+            // restore scroll position
+            var scrollValue = self.appData.get('currentScrollTopValue');
+            $('html, body').animate({
+               scrollTop: scrollValue
+            }, 0);
           },
         }
       );
-      
-      $('html, body').animate({
-         scrollTop: self.appData.get('currentScrollTopValue')
-      }, 0);
-      
     },
     
     onRender: function() {
