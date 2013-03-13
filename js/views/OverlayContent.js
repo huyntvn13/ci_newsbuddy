@@ -45,6 +45,7 @@ define([
           complete: function(){
             $('iframe#news-origin').attr('src', newsOriginURL);
             $('.content#content-loading-overlay').css('display', 'none');
+            $('.content#content-loading-overlay').remove();
           },
         }
       );
@@ -74,7 +75,18 @@ define([
           backToPath += '/' + currentSubSection;
         }
       }
-      app.router.navigate(backToPath, {trigger: true});
+      
+      $('#overlay-container #overlay').animate({
+          opacity: 0,
+        }, {
+          duration: 250, 
+          easing: "jswing",
+          queue: false,
+          complete: function(){
+            app.router.navigate(backToPath, {trigger: true});
+          },
+        }
+      );
       
       $('html, body').animate({
          scrollTop: self.appData.get('currentScrollTopValue')

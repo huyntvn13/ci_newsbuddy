@@ -20,6 +20,19 @@ define(['marionette','templates', 'helper', 'vent'], function (Marionette, templ
     },
     
     restoreHiddenNews: function(e) {
+      var alertParentDiv = $(e.target).closest('div.alert');
+      alertParentDiv.animate({
+          opacity: 0
+        }, {
+          duration: 200,
+          easing: 'easeInOutCubic',
+          queue: false,
+          complete: function(){
+            alertParentDiv.css('display', 'none');
+          }
+        }
+      );
+      
       var newsID = $(e.currentTarget).data("id");
       
       // send request to server
