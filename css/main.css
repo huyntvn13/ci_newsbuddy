@@ -2223,6 +2223,24 @@ a.button-add-content.inactive:after,a.button-add-content.inactive:active:after,a
 	margin:5px auto 20px auto;
 	text-align:center
 }
+.headlines .headline .hasbeenread-overlay.tile {
+  z-index: 41;
+  opacity: .7;
+  background: white;
+  background-color: white;
+  cursor: pointer;
+}
+.headlines .headline .hasbeenread-overlay.tile .hasbeenread-text {
+  padding-right: 10px;
+  height: 20px;
+  background: black;
+  color: white;
+  opacity: .8;
+  text-align: right;
+  font-size: 8pt;
+  font-weight: bold;
+  line-height: 20px;
+}
 .byline {
 	margin:15px 0 15px 20px
 }
@@ -2722,7 +2740,53 @@ a.bhl-spike-first {
 }
 .utility-bar {
   height: 100%;
-  position: fixed;
+  padding-top: 74px;
+  /*position: fixed;*/
+}
+.util-bar-module.hidden {
+  display: none;
+}
+.util-bar-module {
+  border-top: 1px solid #bbbdbf;
+  border-bottom: 1px solid #bbbdbf;
+  box-shadow: inset 0 1px 1px #e2e3e5;
+  /*height: 45px;*/
+}
+.util-bar-interact-module.first {
+  /*border-bottom: 0;*/
+}
+.util-bar-interestedin-label, .util-bar-hidenews-btn {
+  background-clip: padding-box;
+  clear: none;
+  color: #b1dfff;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 44px;
+  position: relative;
+  text-align: center;
+  height: 40px;
+  width: 40px;
+  text-shadow: 0 1px 0 rgba(0,0,0,.2);
+}
+.util-bar-module .label-only {
+  cursor: default;
+}
+.util-bar-hidenews-btn i {
+  color: gray;
+}
+.util-bar-interestedin-label i {
+  color: green;
+}
+.util-bar-hidenews-btn.hiddennews i {
+  color: darkorange;
+}
+.util-bar-module.no-button {
+  border: 0;
+}
+.util-bar-module.has-button:hover {
+  background-color:#efefef;
+  box-shadow:inset -2px 0 4px -1px rgba(0,0,0,.2);
 }
 .asset {
   background: #fff url(../images/patterns/paper-noise.png) repeat top left;

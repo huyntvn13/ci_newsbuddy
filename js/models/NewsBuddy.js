@@ -8,6 +8,8 @@ define(['jquery', 'underscore', 'backbone'],function($, _, Backbone){
       siteName: 'xenoNEWS',
       siteNameFull: 'xenoNEWS.vn',
       
+      considerReadThreshold: 35000,
+      
       canAnimateFromNowOn: false,
       visualGap: 0,
       currentCardWidth: 0,

@@ -20,7 +20,14 @@
       <iframe id="news-origin" sandbox="allow-scripts" src="" style="height:<%= iframeHeight %>px;"></iframe>
       <!-- utility bar -->
       <div class="utility-wrap active show">
-        <div class="utility-bar"></div>
+        <div class="utility-bar">
+          <div class="util-bar-module has-button util-bar-hidenews-module first hidden">
+            <div class="util-bar-hidenews-btn"><i class="icon-trash icon-2x"></i></div>
+          </div>
+          <div class="util-bar-module no-button util-bar-markinterestedin-module hidden">
+            <div class="util-bar-interestedin-label label-only"><i class="icon-check icon-2x"></i></div>
+          </div>
+        </div>
       </div>
       <%} else if(overlayType == "error") {
         var lang = App.appDataModel.get("lang");
@@ -101,7 +108,7 @@
   <% 
   var sectionText = "home";
   if(overlayType == "news"){ 
-    sectionText = App.appDataModel.get("currentSection");
+    sectionText = app.appDataModel.get("currentSection");
   }
   %>
   <section class="card <%= sectionText %> card-loading" id="section_news">
