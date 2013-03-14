@@ -332,7 +332,7 @@ define([
       model : newsModel,
       appData: App.appDataModel,
     };
-    App.overlay.show(new OverlayContent(viewOptions));    console.log('after show news');
+    App.overlay.show(new OverlayContent(viewOptions));
   });
   
   vent.on('newsBuddy:showSearchResult', function(keyword) {
