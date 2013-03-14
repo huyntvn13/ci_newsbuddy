@@ -18,6 +18,7 @@ define([
     
     modelEvents: {
       'change:currentSection': 'modelChanged',
+      'change:showingView': 'showingViewChanged',
     },
     
     modelChanged: function() {
@@ -26,9 +27,26 @@ define([
       $('#navbar li.text.' + this.model.get('currentSection')).addClass('active');
     },
     
+    showingViewChanged: function() {
+      console.log('change showing view' + this.model.get('showingView'));
+      if (this.model.get('showingView') == "search") {
+        //this.render();
+        $(".logo").css("opacity", 1);
+				$(".logo").addClass("large");
+        $(".logo").css("bottom", 0);
+				$("#search-form").css("height", "auto");
+        $("#masthead").css("height", "80px");
+      } else {
+        var val = $("#masthead").css("height");
+        var isSearchFormExpanded = (val == "0px") ? false : true;
+        if (isSearchFormExpanded)
+          this.toggleSearchForm();
+      }  
+    },
+    
     events: {
 			'click li.search.icon': 'toggleSearchForm',
-			'click span.cancel': 'toggleSearchForm',
+			'click span.cancel': 'closeSearchForm',
       'click .submit': 'submitSearchForm',
       'keypress .text-input': 'enterToSubmitSearch',
 		},
@@ -38,9 +56,17 @@ define([
       $(window).scroll(function () {
 				var val = $("#masthead").css("height");
 				var isSearchFormExpanded = (val == "0px") ? false : true;
-				if(isSearchFormExpanded)
+				if(isSearchFormExpanded && self.model.get('showingView') != 'search')
 					self.toggleSearchForm();
 			});
+      
+//      if (self.model.get('showingView') == "search") {
+//				$(".logo").css("opacity", 1);
+//				$(".logo").addClass("large");
+//        $(".logo").css("bottom", 0);
+//				$("#search-form").css("height", "auto");
+//        $("#masthead").css("height", "80px");
+//			}
     },
 		
     enterToSubmitSearch: function(event) {
@@ -62,7 +88,10 @@ define([
       app.router.navigate('/search/' + keyword, {trigger: true});
     },
     
-		toggleSearchForm: function(){	
+		toggleSearchForm: function(){
+      if (this.model.get('showingView') == "search") {
+        return;
+      }
 			var val = $("#masthead").css("height");
 			var isSearchFormExpanded = (val == "0px") ? false : true;
 			
@@ -118,7 +147,28 @@ define([
 			});
 		
 			this.isSearchFormExpanded = !this.isSearchFormExpanded;
-		}, 
+		},
+
+    closeSearchForm: function() {
+      if (this.model.get('showingView') != "search") {
+        this.toggleSearchForm();
+      } else {
+        var self = this;
+        var currentSection = self.model.get('currentSection');
+        var wrap = app.wraps.getWrap(currentSection);
+        var currentSubSection = wrap.get('subSection');
+        var backToPath = '';
+        if(currentSection == 'home' || currentSection == 'null'){
+          backToPath = '';
+        }else {
+          backToPath = '/' + currentSection;
+          if(currentSubSection != ''){
+            backToPath += '/' + currentSubSection;
+          }
+        }
+        app.router.navigate(backToPath, {trigger: true});
+      }
+    },
   });
 
 });
