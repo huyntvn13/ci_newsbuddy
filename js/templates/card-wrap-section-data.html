@@ -38,11 +38,26 @@
                    }
                    %>
                 <div class="<%= columnText %> headline <%= noimage %> <%= belongToSection %>" data-id="<%= news.id %>" data-vr-contentbox="">
+                  <% 
+                    var appSections = app.appDataModel.get("sections");
+                    var sectionStr = "/" + news.section;
+                    if($.inArray(news.cat_abbr, appSections) == -1){
+                      sectionStr += "/" + news.cat_abbr;
+                    }
+                    sectionStr += "/" + news.source_alias + "/" + convertToSeoFriendlyUrl(news.title) + "/" + news.id;
+                  %>
+                  <% if(news["user_interact"] == 1) { %>
+                  <a href="<%= sectionStr %>">
+                    <div class="hasbeenread-overlay tile">
+                      <div class="hasbeenread-text">ĐÃ ĐỌC</div>
+                    </div>
+                  </a>
+                  <% } %>
                   <div class="authors byline byline-nopub"><span class="author"><em><%= news["source"] %></em></span></div>
                   <a class="parent-label <%= belongToSection %>" href="<%= sectionHref %>">
                   <%= news["cat_name"] %>
                   </a>
-                  <% if(app.userModel.get("authenticated")) { %>
+                  <% if(app.userModel.get("authenticated") && news["user_interact"] != 1) { %>
                   <div class="userNewsBtn-container">
                   <div class="userNewsBtn-wrapper">
                     <div class="userNewsBtn hideBtnDiv">
@@ -55,14 +70,6 @@
                   </div>
                   </div>
                   <% } %>
-                  <% 
-                    var appSections = app.appDataModel.get("sections");
-                    var sectionStr = "/" + news.section;
-                    if($.inArray(news.cat_abbr, appSections) == -1){
-                      sectionStr += "/" + news.cat_abbr;
-                    }
-                    sectionStr += "/" + news.source_alias + "/" + convertToSeoFriendlyUrl(news.title) + "/" + news.id;
-                  %>
                   <a class="anchor" href="<%= sectionStr %>" data-ht="HeadlineGrid1">
                     <div class="front tile">
                       <% if(news["image"] != "") {%>
