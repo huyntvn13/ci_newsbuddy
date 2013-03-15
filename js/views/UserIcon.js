@@ -154,7 +154,7 @@ define(['jquery', 'marionette','templates', 'app', 'bootbox', 'helper', 'bootstr
       }
       
       //$('.alert-error').hide(); // Hide any errors on a new submit
-      var loginURL = '../api/login';
+      var loginURL = '/api/login';
       console.log('Logging in...');
       var formValues = {
         email: $.trim($('#loginFormUser').val()),
@@ -194,7 +194,7 @@ define(['jquery', 'marionette','templates', 'app', 'bootbox', 'helper', 'bootstr
       }
       
       //$('.alert-error').hide(); // Hide any errors on a new submit
-      var registerURL = '../api/register';
+      var registerURL = '/api/register';
       console.log('Registering...');
       var formValues = {
         email: $.trim($('#registerFormEmail').val()),

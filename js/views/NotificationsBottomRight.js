@@ -36,7 +36,7 @@ define(['marionette','templates', 'helper', 'vent'], function (Marionette, templ
       var newsID = $(e.currentTarget).data("id");
       
       // send request to server
-      var apiURL = '../api/restorenews/' + newsID;
+      var apiURL = '/api/restorenews/' + newsID;
       $.ajax({
         url: apiURL,
         type: 'POST',

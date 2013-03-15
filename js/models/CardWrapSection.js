@@ -14,8 +14,8 @@ define(['jquery', 'underscore', 'backbone'],function($, _, Backbone){
   	},
     
     url: function() {
-      //return '../api/section/' + this.get("subSection");
-      return '../api/section/' + this.get("sectionName");
+      //return '/api/section/' + this.get("subSection");
+      return '/api/section/' + this.get("sectionName");
     },
     
     restoreNews: function(newsID){
@@ -47,9 +47,9 @@ define(['jquery', 'underscore', 'backbone'],function($, _, Backbone){
       var self = this;
       var apiURL = '';
       if(this.get('subSection') == ''){
-        apiURL = '../api/section/' + this.get('sectionName');
+        apiURL = '/api/section/' + this.get('sectionName');
       }else {
-        apiURL = '../api/section/' + this.get('subSection');
+        apiURL = '/api/section/' + this.get('subSection');
       }
       $.ajax({
         url: apiURL,

@@ -10,13 +10,13 @@ define(['jquery', 'underscore', 'backbone', 'vent'],function($, _, Backbone, ven
     },
     
     url: function() {
-      //return '../api/username/1';
+      //return '/api/username/1';
     },
     
     retrieveStatus: function() {
       var self = this;
       $.ajax({
-        url: '../api/retrieve_status',
+        url: '/api/retrieve_status',
         type: 'GET',
         dataType: "json",
         success: function(res) {

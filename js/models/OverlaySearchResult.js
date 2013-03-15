@@ -14,7 +14,7 @@ define(['jquery', 'underscore', 'backbone'],function($, _, Backbone){
     },
     
     url: function() {
-      return '../api/search/' + this.get("keyword");
+      return '/api/search/' + this.get("keyword");
     },
     
     requestSearchData: function() {

@@ -2223,24 +2223,6 @@ a.button-add-content.inactive:after,a.button-add-content.inactive:active:after,a
 	margin:5px auto 20px auto;
 	text-align:center
 }
-.headlines .headline .hasbeenread-overlay.tile {
-  z-index: 41;
-  opacity: .7;
-  background: white;
-  background-color: white;
-  cursor: pointer;
-}
-.headlines .headline .hasbeenread-overlay.tile .hasbeenread-text {
-  padding-right: 10px;
-  height: 20px;
-  background: black;
-  color: white;
-  opacity: .8;
-  text-align: right;
-  font-size: 8pt;
-  font-weight: bold;
-  line-height: 20px;
-}
 .byline {
 	margin:15px 0 15px 20px
 }
@@ -2427,6 +2409,54 @@ a.button-add-content.inactive:after,a.button-add-content.inactive:active:after,a
 	height:auto;
 	clear:left
 }
+
+/* hasbeenread-overlay */
+.headlines .headline .hasbeenread-overlay.tile {
+  z-index: 41;
+  opacity: .7;
+  background: white;
+  background-color: white;
+  cursor: pointer;
+}
+.headlines .headline .hasbeenread-overlay.tile .hasbeenread-text {
+  padding-right: 10px;
+  height: 20px;
+  background: black;
+  color: white;
+  opacity: .8;
+  text-align: right;
+  font-size: 8pt;
+  font-weight: bold;
+  line-height: 20px;
+}
+/* hasbeenread-overlay for listview */
+.headlines .listview .headline a.hasbeenread-link {
+  position: absolute;
+  display: block;
+  height: 80px;
+  overflow: hidden;
+  width: 118px;
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  border-radius: 6px;
+  background-color: transparent;
+}
+.headlines .listview .headline .hasbeenread-overlay.tile {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  top: 0;
+  left: 0;
+}
+.headlines .listview .headline .hasbeenread-overlay.tile .hasbeenread-text {
+  padding-right: 0;
+  height: 18px;
+  text-align: center;
+  line-height: 18px;
+}
+
+
 .parent-label {
 	background-color:#0050a1;
 	color:#fff;

@@ -47,7 +47,7 @@
                     sectionStr += "/" + news.source_alias + "/" + convertToSeoFriendlyUrl(news.title) + "/" + news.id;
                   %>
                   <% if(news["user_interact"] == 1) { %>
-                  <a href="<%= sectionStr %>">
+                  <a class="hasbeenread-link" href="<%= sectionStr %>">
                     <div class="hasbeenread-overlay tile">
                       <div class="hasbeenread-text">ĐÃ ĐỌC</div>
                     </div>

@@ -13,7 +13,7 @@ define(['jquery', 'underscore', 'backbone'],function($, _, Backbone){
     },
     
     url: function() {
-      return '../api/newsDetails/' + this.get("newsID");
+      return '/api/newsDetails/' + this.get("newsID");
     },
     
     requestNewsData: function() {

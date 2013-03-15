@@ -223,7 +223,7 @@ define(['jquery', 'underscore', 'marionette', 'app', 'vent', 'templates', 'helpe
       var newsID = $(e.currentTarget).data("id");
       
       // send request to server
-      var apiURL = '../api/hidenews/' + newsID;
+      var apiURL = '/api/hidenews/' + newsID;
       $.ajax({
         url: apiURL,
         type: 'POST',
