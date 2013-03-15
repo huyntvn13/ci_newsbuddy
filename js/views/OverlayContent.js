@@ -82,18 +82,23 @@ define([
     closeOverlayBox: function() {
       //window.history.back();
       var self = this;
-      var currentSection = this.appData.get('currentSection');
-      var wrap = app.wraps.getWrap(currentSection);
-      var currentSubSection = wrap.get('subSection');
       var backToPath = '';
-      if(currentSection == 'home' || currentSection == 'null'){
-        backToPath = '';
-      }else {
-        backToPath = '/' + currentSection;
-        if(currentSubSection != ''){
-          backToPath += '/' + currentSubSection;
+      if (this.appData.get('showingView') == 'news') {
+        var currentSection = this.appData.get('currentSection');
+        var wrap = app.wraps.getWrap(currentSection);
+        var currentSubSection = wrap.get('subSection');      
+        if(currentSection == 'home' || currentSection == 'null'){
+          backToPath = '';
+        }else {
+          backToPath = '/' + currentSection;
+          if(currentSubSection != ''){
+            backToPath += '/' + currentSubSection;
+          }
         }
+      } else if (this.appData.get('showingView') == 'search_news') {
+        backToPath = '/search/' + encodeURIComponent(this.appData.get('currentSearchKeyword'));
       }
+      
       
       $('#overlay-container #overlay').animate({
           opacity: 0,

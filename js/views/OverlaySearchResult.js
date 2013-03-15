@@ -30,6 +30,7 @@ define([
       console.log("on datachange");
       this.model.set('isLoading', false);
       this.render();
+      
     },
 
     events: {
@@ -37,7 +38,25 @@ define([
 		},
     
     onRender: function() {
-      
+//      if (this.model.get('isLoading')) {
+//        this.model.requestSearchData();
+//      }
+      $('.search-result-image').each(function(){
+        var thisImgTag = $(this);
+        var img = new Image();
+        img.src = thisImgTag.data("src");
+        //console.log("--image: " + img.src);
+        img.onload=function(){
+          console.log("++image: " + img.src);
+          thisImgTag.attr('src', img.src);
+          thisImgTag.centerImage();
+          thisImgTag.css('display', 'none');
+          thisImgTag.css('display', '');
+        }
+        img.onerror=function(){
+          console.log("--image: " + img.src);
+        }
+      });
     },
   });
 

@@ -316,8 +316,14 @@ define([
   });
   
   vent.on('newsBuddy:showNewsOverlay', function(section, subSection, source, title, id) {
-    App.appDataModel.set('showingView', 'news');
-    
+    var showing = App.appDataModel.get('showingView');
+    if (App.appDataModel.get('showingView') == 'search') {
+      App.appDataModel.set('showingView', 'search_news');
+      $('#search-result-container').css('position', 'absolute');
+    } else {
+      App.appDataModel.set('showingView', 'news');
+    }
+       
     var newsModel = new OverlayContentModel({
       overlayType: 'news',
       newsID: id,
@@ -326,7 +332,7 @@ define([
       model : newsModel,
       appData: App.appDataModel,
     };
-    App.overlay.show(new OverlayContent(viewOptions));
+    App.overlay.show(new OverlayContent(viewOptions));    console.log('after show news');
   });
   
   vent.on('newsBuddy:showSearchResult', function(keyword) {
@@ -339,7 +345,7 @@ define([
         opacity: 1,
       }, 1000 );
       $('article#cards').css('display', 'none');
-    
+    App.appDataModel.set('currentSearchKeyword', decodeURIComponent(keyword));
     var searchModel = new OverlaySearchResultModel({
       keyword: decodeURIComponent(keyword),
     });
@@ -349,7 +355,6 @@ define([
     };
     App.searchResult.show(new OverlaySearchResult(viewOptions));
     searchModel.requestSearchData();
-    //alert("call show search");
   });
   
   vent.on('newsBuddy:show404Error', function() {

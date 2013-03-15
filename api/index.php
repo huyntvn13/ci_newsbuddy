@@ -449,15 +449,16 @@ function getSearchResult() {
   $data = (object) null;
  
   $keyword = $app->request()->params('keyword');
-  $keyword = urldecode($keyword);
+  //$keyword = urldecode($keyword);
   $db_connect = dbConnect();
   $keyword = mysql_real_escape_string($keyword, $db_connect);
   
-  $news_links = $db->news_links()->join('news_categories', 'left join news_categories on news_links.cat_id = news_categories.id')
+  $news_links = $db->news_links()
+                ->join('news_categories', 'left join news_categories on news_links.cat_id = news_categories.id')               
                 ->join('news_sources', 'left join news_sources on news_links.source_id = news_sources.id')    
                 ->select('news_links.id, news_links.title, news_links.description, news_links.link, 
-                  news_links.image_fullsize image, news_links.pubDate, news_categories.name_abbr cat_abbr,
-                  news_categories.name_short cat_name, news_sources.`name` source, news_sources.alias source_alias')
+                    news_links.image_fullsize image, news_links.pubDate, news_categories.section section, news_categories.name_abbr cat_abbr, 
+                    news_categories.name_short cat_name, news_sources.`name` source, news_sources.alias source_alias')
                 ->where('news_links.title LIKE ?', "%$keyword%")
                 ->order('news_links.pubDate desc')->limit(12, 0);
   $news = array();
@@ -468,11 +469,12 @@ function getSearchResult() {
       $news[] = $row;
   }  
   $data->news = $news;
-  $total = $db->news_links()->join('news_categories', 'left join news_categories on news_links.cat_id = news_categories.id')
-                ->join('news_sources', 'left join news_sources on news_links.source_id = news_sources.id')    
-                ->select('news_links.id, news_links.title, news_links.description, news_links.link, 
-                  news_links.image_fullsize image, news_categories.name_abbr cat_abbr, 
-                  news_categories.name_short cat_name, news_sources.`name` source, news_sources.alias source_alias')
+  $total = $db->news_links()
+                ->join('news_categories', 'left join news_categories on news_links.cat_id = news_categories.id')               
+                ->join('news_sources', 'left join news_sources on news_links.source_id = news_sources.id')                
+//                ->select('news_links.id, news_links.title, news_links.description, news_links.link, 
+//                    news_links.image_fullsize image, news_links.pubDate, news_categories.section section, news_categories.name_abbr cat_abbr, 
+//                    news_categories.name_short cat_name, news_sources.`name` source, news_sources.alias source_alias')
                 ->where('news_links.title LIKE ?', "%$keyword%")
                 ->count('*');
   $data->total = $total;

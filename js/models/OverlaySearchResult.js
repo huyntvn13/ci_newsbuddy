@@ -20,7 +20,7 @@ define(['jquery', 'underscore', 'backbone'],function($, _, Backbone){
     requestSearchData: function() {
       var self = this;
       var requestValues = {
-        keyword: encodeURIComponent(self.get('keyword')),
+        keyword: self.get('keyword'),
       };
       var apiURL = '/api/search';
       $.ajax({
