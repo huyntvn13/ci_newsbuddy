@@ -19,6 +19,7 @@ define([
     modelEvents: {
       'change:currentSection': 'modelChanged',
       'change:showingView': 'showingViewChanged',
+      'change:currentSearchKeyword': 'searchKeywordChanged',
     },
     
     modelChanged: function() {
@@ -42,6 +43,10 @@ define([
         if (isSearchFormExpanded)
           this.toggleSearchForm();
       }  
+    },
+    
+    searchKeywordChanged: function() {
+      $(".text-input").val(this.model.get('currentSearchKeyword'));
     },
     
     events: {

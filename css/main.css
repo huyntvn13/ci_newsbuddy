@@ -3763,6 +3763,15 @@ article.asset.ui-loading {
     left:19px
   }
 }
+.view-grid .search-result-figure .image-wrap {
+  width: 200px;
+  height: 130px;
+}
+.view-list .search-result-figure .image-wrap {
+  width: 120px;
+  height: 78px;
+  margin-right: 12px;
+}
 
 /***--- END SEARCH PAGE ---***/
 

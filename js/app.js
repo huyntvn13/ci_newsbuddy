@@ -316,7 +316,6 @@ define([
   });
   
   vent.on('newsBuddy:showNewsOverlay', function(section, subSection, source, title, id) {
-    var showing = App.appDataModel.get('showingView');
     if (App.appDataModel.get('showingView') == 'search') {
       App.appDataModel.set('showingView', 'search_news');
       $('#search-result-container').css('position', 'absolute');
@@ -346,6 +345,7 @@ define([
       }, 1000 );
       $('article#cards').css('display', 'none');
     App.appDataModel.set('currentSearchKeyword', decodeURIComponent(keyword));
+    //alert(decodeURIComponent(keyword));
     var searchModel = new OverlaySearchResultModel({
       keyword: decodeURIComponent(keyword),
     });
