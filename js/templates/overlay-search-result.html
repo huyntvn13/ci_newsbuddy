@@ -50,13 +50,13 @@
           <a href="<%= sectionStr %>" data-ht="search_results_text_4" class="search-result-item-link">
             <div class="front">
               <figure class="search-result-figure">
-                <div class="image-wrap" style="width: 100px;height: 70px"><img class="search-result-image" src="<%= news['image'] %>" data-src="<%= news['image'] %>"></div>
+                <div class="image-wrap" style="width: 200px;height: 130px"><img class="search-result-image" src="<%= news['image'] %>" data-src="<%= news['image'] %>"></div>
               </figure>
               <p class="meta">
                 <span class="date-created meta-info-text"><%= news['pubDate'] %></span>
               </p>
               <h3 class="search-result-title search-results-headline">
-                <%= news["title"] %>
+                <%= reduceText(news["title"], 50) %>
               </h3>
               <p class="text">
                 <%= news["description"] %>            

@@ -37,16 +37,11 @@ define([
 		},
     
     onRender: function() {
-//      if (this.model.get('isLoading')) {
-//        this.model.requestSearchData();
-//      }
       $('.search-result-image').each(function(){
         var thisImgTag = $(this);
         var img = new Image();
         img.src = thisImgTag.data("src");
-        //console.log("--image: " + img.src);
-        img.onload=function(){
-          console.log("++image: " + img.src);
+        img.onload=function(){          
           thisImgTag.attr('src', img.src);
           thisImgTag.centerImage();
           thisImgTag.css('display', 'none');
