@@ -525,6 +525,9 @@ function getSearchResult() {
   global $db;
   $data = (object) null;
   $keyword = trim($app->request()->params('keyword'));  
+  $latest_news_id = $app->request()->params('latest_news_id');
+  $current_search_page = $app->request()->params('current_search_page');
+  $start = $current_search_page  * 12;
   preg_replace('/\s+/', ' ', $keyword);
   $db_connect = getConnection();
 //  //$keyword = mysql_real_escape_string($keyword, $db_connect);
@@ -538,7 +541,19 @@ function getSearchResult() {
       $notlike_clause .= "(title NOT LIKE '%$sub_keyword%' AND description NOT LIKE '%$sub_keyword%') AND ";
     }
   }
-  
+  $news_id_clause = "";
+  if ($latest_news_id > 0) {
+    $news_id_clause = " WHERE id < $latest_news_id ";
+  } else {
+    $latest_sql = "SELECT MAX(id) AS latest_id FROM news_links";
+    try {
+      $stmt = $db_connect->prepare($latest_sql);
+      $stmt->execute();
+      $row = $stmt->fetch(PDO::FETCH_OBJ);
+    } catch(PDOException $e) {} 
+    $lastest_news_id = $row->latest_id;
+  }
+  $data->latest_news_id = $lastest_news_id;
   if ($like_clause != "") {
     $like_clause = substr($like_clause, 0, strlen($like_clause) - 4);
     $notlike_clause = substr($notlike_clause, 0, strlen($notlike_clause) - 5);
@@ -564,8 +579,8 @@ function getSearchResult() {
               FROM news_links n3 
               WHERE MATCH(title, description) AGAINST('$keyword') AND title NOT LIKE '%$keyword%' AND description NOT LIKE '%$keyword%' AND $notlike_clause 
               ORDER BY n3.pubDate desc)
-            ) tmp
-            LIMIT 0, 12) n left join news_categories on n.cat_id = news_categories.id
+            ) tmp $news_id_clause
+            LIMIT $start, 12) n left join news_categories on n.cat_id = news_categories.id
                             left join news_sources on n.source_id = news_sources.id"; 
     $total_sql = "SELECT COUNT(*) as total 
             FROM (
@@ -605,8 +620,8 @@ function getSearchResult() {
               FROM news_links n3 
               WHERE MATCH(title, description) AGAINST('$keyword') AND title NOT LIKE '%$keyword%' AND description NOT LIKE '%$keyword%' 
               ORDER BY n3.pubDate desc)
-            ) tmp
-            LIMIT 0, 12) n left join news_categories on n.cat_id = news_categories.id
+            ) tmp $news_id_clause
+            LIMIT $start, 12) n left join news_categories on n.cat_id = news_categories.id
                             left join news_sources on n.source_id = news_sources.id"; 
     $total_sql = "SELECT COUNT(*) AS total 
             FROM (
@@ -636,7 +651,10 @@ function getSearchResult() {
   } catch(PDOException $e) {} 
   $data->news = $news;
   $data->total = $total_row->total;  
-  
+  if ($news) {
+    $current_search_page++;
+  }
+  $data->current_search_page = $current_search_page;
   $catParentRaw = $db->news_categories()->select("id, name_abbr, name, name_short, parent_abbr");
   $catParent = array();
   foreach ($catParentRaw as $cat){

@@ -27,7 +27,6 @@ define([
     },
     
     dataChanged: function() {
-      console.log("on datachange");
       this.model.set('isLoading', false);
       this.render();
     },

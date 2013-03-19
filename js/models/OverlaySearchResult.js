@@ -21,6 +21,8 @@ define(['jquery', 'underscore', 'backbone'],function($, _, Backbone){
       var self = this;
       var requestValues = {
         keyword: self.get('keyword'),
+        latest_news_id: app.appDataModel.get('currentLatestNewsId'),
+        current_search_page: app.appDataModel.get('currentSearchPage'),
       };
       var apiURL = '/api/search';
       $.ajax({
@@ -34,6 +36,8 @@ define(['jquery', 'underscore', 'backbone'],function($, _, Backbone){
           }
           else {
             self.set('data', res);
+            app.appDataModel.set('currentLatestNewsId', res.latest_news_id);
+            app.appDataModel.set('currentSearchPage', res.current_search_page);
             console.log(res);
           }
         },

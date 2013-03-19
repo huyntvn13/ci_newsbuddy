@@ -18,6 +18,8 @@ define(['jquery', 'underscore', 'backbone'],function($, _, Backbone){
       
       showingView: false, // maybe: 'news', 'section', 'error', 'search', 'search_news'
       currentSearchKeyword: "",
+      currentLatestNewsId: 0,
+      currentSearchPage: 0,
       errorType: "404", // page not found
       
       /* for using with OverlayContent: animation type of overlay content: scale-up(default), or next, prev animation (next news, previous news) */
