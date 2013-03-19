@@ -549,19 +549,19 @@ function getSearchResult() {
             SELECT * 
             FROM (
               (SELECT *
-              FROM (SELECT * FROM news_links_copy ORDER BY pubDate desc) n1 
+              FROM (SELECT * FROM news_links ORDER BY pubDate desc) n1 
               WHERE title LIKE '%$keyword%')
               UNION
               (SELECT *
-              FROM (SELECT * FROM news_links_copy ORDER BY pubDate desc) n2 
+              FROM (SELECT * FROM news_links ORDER BY pubDate desc) n2 
               WHERE description LIKE '%$keyword%' AND title NOT LIKE '%$keyword%')
               UNION
               (SELECT *
-              FROM (SELECT * FROM news_links_copy ORDER BY pubDate desc) n4
+              FROM (SELECT * FROM news_links ORDER BY pubDate desc) n4
               WHERE title NOT LIKE '%$keyword%' AND description NOT LIKE '%$keyword%' AND ($like_clause))
               UNION
               (SELECT *
-              FROM news_links_copy n3 
+              FROM news_links n3 
               WHERE MATCH(title, description) AGAINST('$keyword') AND title NOT LIKE '%$keyword%' AND description NOT LIKE '%$keyword%' AND $notlike_clause 
               ORDER BY n3.pubDate desc)
             ) tmp
@@ -570,19 +570,19 @@ function getSearchResult() {
     $total_sql = "SELECT COUNT(*) as total 
             FROM (
               (SELECT *
-              FROM (SELECT * FROM news_links_copy ORDER BY pubDate desc) n1 
+              FROM (SELECT * FROM news_links ORDER BY pubDate desc) n1 
               WHERE title LIKE '%$keyword%')
               UNION
               (SELECT *
-              FROM (SELECT * FROM news_links_copy ORDER BY pubDate desc) n2 
+              FROM (SELECT * FROM news_links ORDER BY pubDate desc) n2 
               WHERE description LIKE '%$keyword%' AND title NOT LIKE '%$keyword%')
               UNION
               (SELECT *
-              FROM (SELECT * FROM news_links_copy ORDER BY pubDate desc) n4
+              FROM (SELECT * FROM news_links ORDER BY pubDate desc) n4
               WHERE title NOT LIKE '%$keyword%' AND description NOT LIKE '%$keyword%' AND ($like_clause))
               UNION
               (SELECT *
-              FROM news_links_copy n3 
+              FROM news_links n3 
               WHERE MATCH(title, description) AGAINST('$keyword') AND title NOT LIKE '%$keyword%' AND description NOT LIKE '%$keyword%' AND $notlike_clause 
               ORDER BY n3.pubDate desc)
             ) tmp";
@@ -594,15 +594,15 @@ function getSearchResult() {
             SELECT * 
             FROM (
               (SELECT *
-              FROM (SELECT * FROM news_links_copy ORDER BY pubDate desc) n1 
+              FROM (SELECT * FROM news_links ORDER BY pubDate desc) n1 
               WHERE title LIKE '%$keyword%')
               UNION
               (SELECT *
-              FROM (SELECT * FROM news_links_copy ORDER BY pubDate desc) n2 
+              FROM (SELECT * FROM news_links ORDER BY pubDate desc) n2 
               WHERE description LIKE '%$keyword%' AND title NOT LIKE '%$keyword%')
               UNION
               (SELECT *
-              FROM news_links_copy n3 
+              FROM news_links n3 
               WHERE MATCH(title, description) AGAINST('$keyword') AND title NOT LIKE '%$keyword%' AND description NOT LIKE '%$keyword%' 
               ORDER BY n3.pubDate desc)
             ) tmp
@@ -611,15 +611,15 @@ function getSearchResult() {
     $total_sql = "SELECT COUNT(*) AS total 
             FROM (
               (SELECT *
-              FROM (SELECT * FROM news_links_copy ORDER BY pubDate desc) n1 
+              FROM (SELECT * FROM news_links ORDER BY pubDate desc) n1 
               WHERE title LIKE '%$keyword%')
               UNION
               (SELECT *
-              FROM (SELECT * FROM news_links_copy ORDER BY pubDate desc) n2 
+              FROM (SELECT * FROM news_links ORDER BY pubDate desc) n2 
               WHERE description LIKE '%$keyword%' AND title NOT LIKE '%$keyword%')
               UNION
               (SELECT *
-              FROM news_links_copy n3 
+              FROM news_links n3 
               WHERE MATCH(title, description) AGAINST('$keyword') AND title NOT LIKE '%$keyword%' AND description NOT LIKE '%$keyword%' 
               ORDER BY n3.pubDate desc)
             ) tmp";
