@@ -3470,7 +3470,7 @@ article.asset.ui-loading {
 .results .search-result-item .parent-label {
   left:19px;
   position:absolute;
-  top:19px
+  top:17px
 }
 .results.view-list .search-result-item .parent-label {
   display:none
@@ -3792,6 +3792,15 @@ article.asset.ui-loading {
   .results .search-result-item.topresult .parent-label {
     left:19px
   }
+}
+.view-grid .search-result-figure .image-wrap {
+  width: 200px;
+  height: 130px;
+}
+.view-list .search-result-figure .image-wrap {
+  width: 120px;
+  height: 78px;
+  margin-right: 12px;
 }
 
 /***--- END SEARCH PAGE ---***/

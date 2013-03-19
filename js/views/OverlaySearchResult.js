@@ -27,35 +27,58 @@ define([
     },
     
     dataChanged: function() {
-      console.log("on datachange");
       this.model.set('isLoading', false);
       this.render();
     },
 
     events: {
-			
+			'click .ui-btn.grid-btn': 'toggleGridList',
+      'click .ui-btn.list-btn': 'toggleGridList',
 		},
     
-    onRender: function() {
-//      if (this.model.get('isLoading')) {
-//        this.model.requestSearchData();
-//      }
+    toListView: function() {
+      this.model.set('viewType', 'list');
+      $('.ui-btn.grid-btn').removeClass('active');
+      $('.ui-btn.list-btn').addClass('active');
+      $('.summary').removeClass('grid');
+      $('.summary').addClass('list');
+      $('.results').removeClass('view-grid');
+      $('.results').addClass('view-list');
       $('.search-result-image').each(function(){
         var thisImgTag = $(this);
-        var img = new Image();
-        img.src = thisImgTag.data("src");
-        //console.log("--image: " + img.src);
-        img.onload=function(){
-          console.log("++image: " + img.src);
-          thisImgTag.attr('src', img.src);
-          thisImgTag.centerImage();
-          thisImgTag.css('display', 'none');
-          thisImgTag.css('display', '');
-        }
-        img.onerror=function(){
-          console.log("--image: " + img.src);
-        }
+        thisImgTag.centerImage();
       });
+    },
+    toGridView: function() {
+      this.model.set('viewType', 'grid');
+      $('.ui-btn.grid-btn').addClass('active');
+      $('.ui-btn.list-btn').removeClass('active');
+      $('.summary').addClass('grid');
+      $('.summary').removeClass('list');
+      $('.results').addClass('view-grid');
+      $('.results').removeClass('view-list');
+      $('.search-result-image').each(function(){
+        var thisImgTag = $(this);
+        thisImgTag.centerImage();
+      });
+    },
+    toggleGridList: function() {
+      if($('.ui-btn.grid-btn').hasClass('active')){ 
+        // to listview
+        this.toListView();
+      }else{ 
+        // to gridview
+        this.toGridView();
+      }
+    },
+    
+    onRender: function() {
+      if(this.model.get('viewType') == "grid"){
+        this.toGridView();
+      }else{ // to list view
+        this.toListView();
+      }
+      $('head title').html('Kết quả tìm kiếm "' + this.model.get('keyword') + '" - '+ app.appDataModel.get('siteNameFull'));
     },
   });
 
