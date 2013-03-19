@@ -79,6 +79,7 @@ define([
       }else{ // to list view
         this.toListView();
       }
+      $('head title').html('Kết quả tìm kiếm "' + this.model.get('keyword') + '" - '+ app.appDataModel.get('siteNameFull'));
     },
   });
 

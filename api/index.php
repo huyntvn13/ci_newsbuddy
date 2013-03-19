@@ -524,37 +524,118 @@ function getSearchResult() {
   $app = \Slim\Slim::getInstance();
   global $db;
   $data = (object) null;
- 
-  $keyword = $app->request()->params('keyword');
-  //$keyword = urldecode($keyword);
-  $db_connect = dbConnect();
-  $keyword = mysql_real_escape_string($keyword, $db_connect);
+  $keyword = trim($app->request()->params('keyword'));  
+  preg_replace('/\s+/', ' ', $keyword);
+  $db_connect = getConnection();
+//  //$keyword = mysql_real_escape_string($keyword, $db_connect);
+
+  $sub_keywords = explode(" ", $keyword);
+  $like_clause = "";
+  $notlike_clause = "";
+  foreach ($sub_keywords as $sub_keyword) {
+    if (strlen($sub_keyword) < 4) {
+      $like_clause .= "(title LIKE '%$sub_keyword%' OR description LIKE '%$sub_keyword%') OR ";
+      $notlike_clause .= "(title NOT LIKE '%$sub_keyword%' AND description NOT LIKE '%$sub_keyword%') AND ";
+    }
+  }
   
-  $news_links = $db->news_links()
-                ->join('news_categories', 'left join news_categories on news_links.cat_id = news_categories.id')               
-                ->join('news_sources', 'left join news_sources on news_links.source_id = news_sources.id')    
-                ->select('news_links.id, news_links.title, news_links.description, news_links.link, 
-                    news_links.image_fullsize image, news_links.pubDate, news_categories.section section, news_categories.name_abbr cat_abbr, 
-                    news_categories.name_short cat_name, news_sources.`name` source, news_sources.alias source_alias')
-                ->where('news_links.title LIKE ?', "%$keyword%")
-                ->order('news_links.pubDate desc')->limit(12, 0);
-  $news = array();
-  foreach ($news_links as $news_link) {
-      $row = array();        
-      $row = iterator_to_array($news_link, true);
-      $row['pubDate'] = date('m/d/Y H:i:s', strtotime($row['pubDate']));
-      $news[] = $row;
-  }  
+  if ($like_clause != "") {
+    $like_clause = substr($like_clause, 0, strlen($like_clause) - 4);
+    $notlike_clause = substr($notlike_clause, 0, strlen($notlike_clause) - 5);
+    $sql = "SELECT n.id, n.title, n.description, n.link, 
+                n.image_fullsize image, n.pubDate, news_categories.section section, news_categories.name_abbr cat_abbr, 
+                news_categories.name_short cat_name, news_sources.`name` source, news_sources.alias source_alias 
+          FROM (
+            SELECT * 
+            FROM (
+              (SELECT *
+              FROM (SELECT * FROM news_links_copy ORDER BY pubDate desc) n1 
+              WHERE title LIKE '%$keyword%')
+              UNION
+              (SELECT *
+              FROM (SELECT * FROM news_links_copy ORDER BY pubDate desc) n2 
+              WHERE description LIKE '%$keyword%' AND title NOT LIKE '%$keyword%')
+              UNION
+              (SELECT *
+              FROM (SELECT * FROM news_links_copy ORDER BY pubDate desc) n4
+              WHERE title NOT LIKE '%$keyword%' AND description NOT LIKE '%$keyword%' AND ($like_clause))
+              UNION
+              (SELECT *
+              FROM news_links_copy n3 
+              WHERE MATCH(title, description) AGAINST('$keyword') AND title NOT LIKE '%$keyword%' AND description NOT LIKE '%$keyword%' AND $notlike_clause 
+              ORDER BY n3.pubDate desc)
+            ) tmp
+            LIMIT 0, 12) n left join news_categories on n.cat_id = news_categories.id
+                            left join news_sources on n.source_id = news_sources.id"; 
+    $total_sql = "SELECT COUNT(*) as total 
+            FROM (
+              (SELECT *
+              FROM (SELECT * FROM news_links_copy ORDER BY pubDate desc) n1 
+              WHERE title LIKE '%$keyword%')
+              UNION
+              (SELECT *
+              FROM (SELECT * FROM news_links_copy ORDER BY pubDate desc) n2 
+              WHERE description LIKE '%$keyword%' AND title NOT LIKE '%$keyword%')
+              UNION
+              (SELECT *
+              FROM (SELECT * FROM news_links_copy ORDER BY pubDate desc) n4
+              WHERE title NOT LIKE '%$keyword%' AND description NOT LIKE '%$keyword%' AND ($like_clause))
+              UNION
+              (SELECT *
+              FROM news_links_copy n3 
+              WHERE MATCH(title, description) AGAINST('$keyword') AND title NOT LIKE '%$keyword%' AND description NOT LIKE '%$keyword%' AND $notlike_clause 
+              ORDER BY n3.pubDate desc)
+            ) tmp";
+  } else {
+    $sql = "SELECT n.id, n.title, n.description, n.link, 
+                n.image_fullsize image, n.pubDate, news_categories.section section, news_categories.name_abbr cat_abbr, 
+                news_categories.name_short cat_name, news_sources.`name` source, news_sources.alias source_alias 
+          FROM (
+            SELECT * 
+            FROM (
+              (SELECT *
+              FROM (SELECT * FROM news_links_copy ORDER BY pubDate desc) n1 
+              WHERE title LIKE '%$keyword%')
+              UNION
+              (SELECT *
+              FROM (SELECT * FROM news_links_copy ORDER BY pubDate desc) n2 
+              WHERE description LIKE '%$keyword%' AND title NOT LIKE '%$keyword%')
+              UNION
+              (SELECT *
+              FROM news_links_copy n3 
+              WHERE MATCH(title, description) AGAINST('$keyword') AND title NOT LIKE '%$keyword%' AND description NOT LIKE '%$keyword%' 
+              ORDER BY n3.pubDate desc)
+            ) tmp
+            LIMIT 0, 12) n left join news_categories on n.cat_id = news_categories.id
+                            left join news_sources on n.source_id = news_sources.id"; 
+    $total_sql = "SELECT COUNT(*) AS total 
+            FROM (
+              (SELECT *
+              FROM (SELECT * FROM news_links_copy ORDER BY pubDate desc) n1 
+              WHERE title LIKE '%$keyword%')
+              UNION
+              (SELECT *
+              FROM (SELECT * FROM news_links_copy ORDER BY pubDate desc) n2 
+              WHERE description LIKE '%$keyword%' AND title NOT LIKE '%$keyword%')
+              UNION
+              (SELECT *
+              FROM news_links_copy n3 
+              WHERE MATCH(title, description) AGAINST('$keyword') AND title NOT LIKE '%$keyword%' AND description NOT LIKE '%$keyword%' 
+              ORDER BY n3.pubDate desc)
+            ) tmp";
+  }
+   
+  try {
+    $stmt = $db_connect->prepare($sql);
+    $stmt->execute();
+    $news = $stmt->fetchAll(PDO::FETCH_OBJ);
+    $stmt = $db_connect->prepare($total_sql);
+    $stmt->execute();
+    $total_row = $stmt->fetch(PDO::FETCH_OBJ);
+    $db_connect = null;
+  } catch(PDOException $e) {} 
   $data->news = $news;
-  $total = $db->news_links()
-                ->join('news_categories', 'left join news_categories on news_links.cat_id = news_categories.id')               
-                ->join('news_sources', 'left join news_sources on news_links.source_id = news_sources.id')                
-//                ->select('news_links.id, news_links.title, news_links.description, news_links.link, 
-//                    news_links.image_fullsize image, news_links.pubDate, news_categories.section section, news_categories.name_abbr cat_abbr, 
-//                    news_categories.name_short cat_name, news_sources.`name` source, news_sources.alias source_alias')
-                ->where('news_links.title LIKE ?', "%$keyword%")
-                ->count('*');
-  $data->total = $total;
+  $data->total = $total_row->total;  
   
   $catParentRaw = $db->news_categories()->select("id, name_abbr, name, name_short, parent_abbr");
   $catParent = array();

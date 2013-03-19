@@ -337,13 +337,15 @@ define([
   vent.on('newsBuddy:showSearchResult', function(keyword) {
     
     App.appDataModel.set('showingView', 'search');
+    App.overlay.reset();
+    $('#overlay-container').removeClass('show');
     $('#search-result-container').addClass('show');
-      $('#search-result-container').css('height', '5px');
-      $("#search-result-container").animate({
-        height: "800px",
-        opacity: 1,
-      }, 1000 );
-      $('article#cards').css('display', 'none');
+    $('#search-result-container').css('height', '5px');
+    $("#search-result-container").animate({
+      height: "800px",
+      opacity: 1,
+    }, 1000 );
+    $('article#cards').css('display', 'none');
     App.appDataModel.set('currentSearchKeyword', decodeURIComponent(keyword));
     //alert(decodeURIComponent(keyword));
     var searchModel = new OverlaySearchResultModel({
