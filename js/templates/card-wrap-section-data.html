@@ -1,5 +1,5 @@
 <section id="section_<%= sectionName %>" class="<%= sectionName %> card None card-bumped" data-section-id="<%= sectionName %>" data-subsection-id="<%= subSection %>">
-  <div class="card-content" style="min-height: 400px;">
+  <div class="card-content">
     <div class="size-full">
       <a href="#" class="open-sidebar sidebar-button" style="display: none;">
         <div class="icon"></div>
@@ -99,12 +99,13 @@
                 <% } %>
               </div>
             </div>
-            <!--<div class="show-more"><a href="#" class="button-add-content" data-default="Show More News" data-loading="Loading More News">Show More News</a></div>-->
-            <% if (data["news"].length > 0) { %>
-            <div class="show-more"><a href="#" class="button-add-content" data-default="Xem thêm" data-loading="Đang tải">Xem thêm</a></div>
-            <% } else { %>
-            <div class="show-more">Chuyên mục đang được cập nhật</div>
-            <% } %>
+            <div class="page-navigation">
+              <a class="pagenavlink prev-navlink hidden" href="#"></a>
+              <a class="pagenavlink next-navlink" href="#"></a>
+            </div>
+            <!--
+            <div class="show-more"><a href="#" class="button-add-content" data-default="Show More News" data-loading="Loading More News">Show More News</a></div>
+            -->
             <div class="clearfix"></div>
           </div>
         </div>
