@@ -19,12 +19,10 @@
 <div class="results view-grid">
   <div class="inner">
     <div class="list-content">
-      <ul class="clearfix search-results-list">
+      <ul class="clearfix search-results-list" id="search-results-list">
         <% for(var i=0, len=data["news"].length; i<len; i++){
           var news = data["news"][i]; 
-          
-          var noimage = (news["image"] == "") ? "noimage" : "";
-
+          var item_class = (news["image"] == "") ? "message" : "text";
           var parentAbbr = data["catParent"][news["cat_abbr"]]["parent_abbr"];
           var belongToSection = (parentAbbr == "") ? data["catParent"][news["cat_abbr"]]["name_abbr"] : parentAbbr;
 
@@ -43,20 +41,21 @@
           }
           sectionStr += "/" + news.source_alias + "/" + convertToSeoFriendlyUrl(news.title) + "/" + news.id;
         %>
-        <li class="text search-result-item">
+        <li class="<%= item_class %> search-result-item">         
           <a class="parent-label <%= belongToSection %>" href="<%= sectionHref %>">
             <%= news["cat_name"] %>
           </a>
+          <% if (news["image"] != "") { %>
           <a href="<%= sectionStr %>" data-ht="search_results_text_4" class="search-result-item-link">
             <div class="front">
               <figure class="search-result-figure">
-                <div class="image-wrap" style=""><img class="search-result-image" src="<%= news['image'] %>" data-src="<%= news['image'] %>"></div>
+                <div class="image-wrap" width="200" height="135"><img class="search-result-image" src="<%= news['image'] %>" data-src="<%= news['image'] %>"></div>
               </figure>
               <p class="meta">
                 <span class="date-created meta-info-text"><%= news['pubDate'] %></span>
               </p>
               <h3 class="search-result-title search-results-headline">
-                <%= reduceText(news["title"], 50) %>
+                <%= reduceText(news["title"], 75) %>
               </h3>
               <p class="text">
                 <%= news["description"] %>            
@@ -75,10 +74,23 @@
               </p>
             </div>
           </a>
+          <% } else { %>
+          <a href="<%= sectionStr %>" class="search-result-item-link">
+            <p class="meta">
+              <span class="date-created meta-info-text"><%= news['pubDate'] %></span>
+            </p>
+            <h3 class="search-result-title-noimage search-results-headline"><%= news["title"] %></h3>
+            <div class="clearleft"></div>
+          </a>
+          <% } %>
         </li>
       <% } %>
       </ul>      
     </div>
+    <div class="more-results" style="display: none" id="loading-more-results">
+    
+    </div>
   </div>
 </div>
+<div class="show-more" style="margin: 25px auto 20px auto; text-align: center"><a href="javascript:;" class="button-add-content" data-default="Xem thêm" data-loading="Đang tải">Xem thêm</a></div>
 <% } %>

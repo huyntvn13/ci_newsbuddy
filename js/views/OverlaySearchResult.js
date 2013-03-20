@@ -4,7 +4,9 @@ define([
   'jquery',
   'marionette',
   'templates',
-  ], function ($, Marionette, templates) {
+  'models/ItemSearchResult',
+  'views/ItemSearchResult'
+  ], function ($, Marionette, templates, ItemSearchResultModel, ItemSearchResult) {
   "use strict";
 
   return Marionette.ItemView.extend({
@@ -34,6 +36,7 @@ define([
     events: {
 			'click .ui-btn.grid-btn': 'toggleGridList',
       'click .ui-btn.list-btn': 'toggleGridList',
+      'click .button-add-content': 'getMoreResult'
 		},
     
     toListView: function() {
@@ -70,6 +73,48 @@ define([
         // to gridview
         this.toGridView();
       }
+    },
+    
+    getMoreResult: function() {
+      //$('#search-results-list').append("<div class='more-results'></div>");
+      
+      $('#loading-more-results').css('display', '');
+      var requestValues = {
+        keyword: this.model.get('keyword'),
+        latest_news_id: app.appDataModel.get('currentLatestNewsId'),
+        current_search_page: app.appDataModel.get('currentSearchPage'),
+        start: (app.appDataModel.get('currentSearchPage') + 1) * 12,
+        limit: 12,
+      };
+      var apiURL = '/api/search';
+      $.ajax({
+        url: apiURL,
+        type: 'POST',
+        dataType: "json",
+        data: requestValues,
+        success: function(res) {
+          $('#loading-more-results').css('display', 'none');
+          if(res.error) {
+            
+          }
+          else {            
+            var results = res.news;
+            var len = results.length;
+            for (var i = 0; i<len; i++) {
+              var itemSearchModel = new ItemSearchResultModel({
+                news: results[i],
+                data: res,
+              });
+              var itemSearchView = new ItemSearchResult({model: itemSearchModel});
+              $('#search-results-list').append( itemSearchView.render().el );
+            }
+            app.appDataModel.set('currentLatestNewsId', res.latest_news_id);
+            app.appDataModel.set('currentSearchPage', res.current_search_page);
+            console.log(res);
+          }
+        },
+      });
+      
     },
     
     onRender: function() {

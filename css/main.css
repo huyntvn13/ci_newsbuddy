@@ -1721,6 +1721,7 @@ a.sp-nav-link {
 }
 .size-suspender {
 	background: #1877b6 url(../images/patterns/noise.png) repeat top left;
+  min-height: 400px;
 }
 .home .size-suspender.card-loading {
 	background-color:#1877b6
@@ -3505,6 +3506,7 @@ article.asset.ui-loading {
 .view-grid .search-result-item .meta {
   bottom:16px;
   left:20px;
+  font-size:12px;
   position:absolute
 }
 .view-list .search-result-item .meta {
@@ -3765,7 +3767,8 @@ article.asset.ui-loading {
 }
 .view-grid .search-result-figure .image-wrap {
   width: 200px;
-  height: 130px;
+  height: 115px;
+  overflow: hidden;
 }
 .view-list .search-result-figure .image-wrap {
   width: 120px;
