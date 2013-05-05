@@ -261,7 +261,9 @@ define([
     
     // update status showingSection, showingNews, showingError
     App.appDataModel.set('showingView', 'section');
-  
+    App.appDataModel.set('currentLatestNewsId', 0);
+    App.appDataModel.set('currentSearchPage', 0);
+    
     // remove Overlay, if being opened
     App.overlay.reset();
     $('#overlay-container').removeClass('show');
@@ -346,6 +348,7 @@ define([
       opacity: 1,
     }, 1000 );
     $('article#cards').css('display', 'none');
+    $('body').removeClass('noscroll');
     App.appDataModel.set('currentSearchKeyword', decodeURIComponent(keyword));
     //alert(decodeURIComponent(keyword));
     var searchModel = new OverlaySearchResultModel({

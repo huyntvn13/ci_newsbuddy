@@ -527,7 +527,8 @@ function getSearchResult() {
   $keyword = trim($app->request()->params('keyword'));  
   $latest_news_id = $app->request()->params('latest_news_id');
   $current_search_page = $app->request()->params('current_search_page');
-  $start = $current_search_page  * 12;
+  $start = $app->request()->params('start');
+  $limit = $app->request()->params('limit');
   preg_replace('/\s+/', ' ', $keyword);
   $db_connect = getConnection();
 //  //$keyword = mysql_real_escape_string($keyword, $db_connect);
@@ -558,7 +559,7 @@ function getSearchResult() {
     $like_clause = substr($like_clause, 0, strlen($like_clause) - 4);
     $notlike_clause = substr($notlike_clause, 0, strlen($notlike_clause) - 5);
     $sql = "SELECT n.id, n.title, n.description, n.link, 
-                n.image_fullsize image, n.pubDate, news_categories.section section, news_categories.name_abbr cat_abbr, 
+                n.image, n.pubDate, news_categories.section section, news_categories.name_abbr cat_abbr, 
                 news_categories.name_short cat_name, news_sources.`name` source, news_sources.alias source_alias 
           FROM (
             SELECT * 
@@ -580,7 +581,7 @@ function getSearchResult() {
               WHERE MATCH(title, description) AGAINST('$keyword') AND title NOT LIKE '%$keyword%' AND description NOT LIKE '%$keyword%' AND $notlike_clause 
               ORDER BY n3.pubDate desc)
             ) tmp $news_id_clause
-            LIMIT $start, 12) n left join news_categories on n.cat_id = news_categories.id
+            LIMIT $start, $limit) n left join news_categories on n.cat_id = news_categories.id
                             left join news_sources on n.source_id = news_sources.id"; 
     $total_sql = "SELECT COUNT(*) as total 
             FROM (
@@ -603,7 +604,7 @@ function getSearchResult() {
             ) tmp";
   } else {
     $sql = "SELECT n.id, n.title, n.description, n.link, 
-                n.image_fullsize image, n.pubDate, news_categories.section section, news_categories.name_abbr cat_abbr, 
+                n.image, n.pubDate, news_categories.section section, news_categories.name_abbr cat_abbr, 
                 news_categories.name_short cat_name, news_sources.`name` source, news_sources.alias source_alias 
           FROM (
             SELECT * 
@@ -621,7 +622,7 @@ function getSearchResult() {
               WHERE MATCH(title, description) AGAINST('$keyword') AND title NOT LIKE '%$keyword%' AND description NOT LIKE '%$keyword%' 
               ORDER BY n3.pubDate desc)
             ) tmp $news_id_clause
-            LIMIT $start, 12) n left join news_categories on n.cat_id = news_categories.id
+            LIMIT $start, $limit) n left join news_categories on n.cat_id = news_categories.id
                             left join news_sources on n.source_id = news_sources.id"; 
     $total_sql = "SELECT COUNT(*) AS total 
             FROM (
@@ -649,6 +650,9 @@ function getSearchResult() {
     $total_row = $stmt->fetch(PDO::FETCH_OBJ);
     $db_connect = null;
   } catch(PDOException $e) {} 
+  foreach ($news as $n) {
+    $n->pubDate = date('d/m/Y', strtotime($n->pubDate));
+  }
   $data->news = $news;
   $data->total = $total_row->total;  
   if ($news) {

@@ -1,0 +1,60 @@
+<%  
+  var noimage = (news["image"] == "") ? "noimage" : "";
+
+  var parentAbbr = data["catParent"][news["cat_abbr"]]["parent_abbr"];
+  var belongToSection = (parentAbbr == "") ? data["catParent"][news["cat_abbr"]]["name_abbr"] : parentAbbr;
+
+  var sectionHref = "";
+  if(parentAbbr == ""){
+     sectionHref = "/" + belongToSection;
+  }else {
+     sectionHref = "/" + belongToSection + "/" + news["cat_abbr"];
+  }
+  var appSections = app.appDataModel.get("sections");
+  var sectionStr = "/" + news.section;
+  if($.inArray(news.cat_abbr, appSections) == -1){
+    sectionStr += "/" + news.cat_abbr;
+  }
+  sectionStr += "/" + news.source_alias + "/" + convertToSeoFriendlyUrl(news.title) + "/" + news.id;
+%>
+<a class="parent-label <%= belongToSection %>" href="<%= sectionHref %>">
+  <%= news["cat_name"] %>
+</a>
+<% if (news["image"] != "") { %>
+<a href="<%= sectionStr %>" data-ht="search_results_text_4" class="search-result-item-link">
+  <div class="front">
+    <figure class="search-result-figure">
+      <div class="image-wrap" style=""><img class="search-result-image" src="<%= news['image'] %>" data-src="<%= news['image'] %>"></div>
+    </figure>
+    <p class="meta">
+      <span class="date-created meta-info-text"><%= news['pubDate'] %></span>
+    </p>
+    <h3 class="search-result-title search-results-headline">
+      <%= reduceText(news["title"], 75) %>
+    </h3>
+    <p class="text">
+      <%= news["description"] %>            
+    </p>
+    <div class="clearleft"></div>              
+  </div>
+  <div class="back">
+    <h3 class="search-result-title-back search-results-headline">
+      <%= news["title"] %>
+    </h3>
+    <p class="text">
+      <%= news["description"] %>            
+    </p>
+    <p class="meta">
+      <span class="byline meta-info-text"><%= news["source"] %></span>
+    </p>
+  </div>
+</a>
+<% } else { %>
+<a href="<%= sectionStr %>" class="search-result-item-link">
+  <p class="meta">
+    <span class="date-created meta-info-text"><%= news['pubDate'] %></span>
+  </p>
+  <h3 class="search-result-title-noimage search-results-headline"><%= news["title"] %></h3>
+  <div class="clearleft"></div>
+</a>
+<% } %>
