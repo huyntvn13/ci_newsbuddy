@@ -314,7 +314,7 @@ function getSectionData($section, $start = 0, $limit = 18) {
   $data->category = $category;
   
   /* catParent */
-  $catParentRaw = $db->news_categories()->select("id, name_abbr, name, name_short, parent_abbr");
+  $catParentRaw = $db->news_categories()->select("id, name_abbr, name, name_short, parent_abbr")->where('active_in_category = 1');
   $catParent = array();
   $subCats = array();
   foreach ($catParentRaw as $cat){

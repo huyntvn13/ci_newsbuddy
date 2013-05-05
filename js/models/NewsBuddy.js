@@ -48,7 +48,7 @@ define(['jquery', 'underscore', 'backbone'],function($, _, Backbone){
         'technology': ['ict', 'science'],
         'lifestyle':  ['culture', 'entertainment'],
         'education':  ['studying_abroad', 'enrollment'],
-        'health':     ['be_healthy', 'gender_health'],
+        'health':     ['be_healthy', 'love_marriage'],
         'realestate': ['realestate_news', 'living_space'],
       },
       sectionsDataOrder: [],

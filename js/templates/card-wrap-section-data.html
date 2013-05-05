@@ -115,14 +115,16 @@
             <% if(subSection != ""){ %><a href="/<%= sectionName %>" class="clst-link"><%}%><%= data["category"]["name"] %><% if(subSection != ""){ %></a><%}%>
             </h1>
             <ul class="scrollable-content clearfix clst-unordered-items">
-            <% for(var i=0, len=data["subCats"].length; i<len; i++){ %>
-              <% 
-                var subCat = data["subCats"][i]; 
-                var selectedStr = (subCat.name_abbr == subSection) ? "selected" : "";
-              %>
-              <li data-href="/<%= subCat.parent_abbr %>/<%= subCat.name_abbr %>" class="clst-item clst-item-link-styles <%= selectedStr %>">
-                <a class="clst-link" href="/<%= subCat.parent_abbr %>/<%= subCat.name_abbr %>" data-ht="/"><%= subCat.name %></a>
-              </li>
+            <% if(data["subCats"].length > 1) { %>
+              <% for(var i=0, len=data["subCats"].length; i<len; i++){ %>
+                <% 
+                  var subCat = data["subCats"][i]; 
+                  var selectedStr = (subCat.name_abbr == subSection) ? "selected" : "";
+                %>
+                <li data-href="/<%= subCat.parent_abbr %>/<%= subCat.name_abbr %>" class="clst-item clst-item-link-styles <%= selectedStr %>">
+                  <a class="clst-link" href="/<%= subCat.parent_abbr %>/<%= subCat.name_abbr %>" data-ht="/"><%= subCat.name %></a>
+                </li>
+              <% } %>
             <% } %>
             </ul>
           </div>
