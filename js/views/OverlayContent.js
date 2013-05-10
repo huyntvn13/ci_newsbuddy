@@ -77,6 +77,8 @@ define([
     // function: mark news as read
     requestMarkingReadNews: function(){
       var self = this;
+      self.clearTimer();
+      
       var nID = self.model.get('newsID');
       if(nID != 0){ // nID == 0 => don't send request (because maybe this overlay is showing something else, like error, not news)
         var apiURL = '/api/marknewsasread/' + nID;
@@ -90,8 +92,13 @@ define([
             }
             else {
               console.log("Marked this news as read.");
-              // display label
-              $('.util-bar-markinterestedin-module').removeClass('hidden');
+              
+              $('.util-bar-interestedin-label').addClass('markedasread');
+              $('.util-bar-addtoqueue-btn').removeClass('addedtoqueue');
+              $('.util-bar-hidenews-btn').removeClass('hiddennews');
+              
+              self.model.set('newsInteract', 1);
+              self.updateUserInteractInCurrentSectionNewsList();
             }
           },
         });
@@ -112,12 +119,25 @@ define([
       // update utility-wrap
       if(app.userModel.get('authenticated')){
         $('.util-bar-hidenews-module').removeClass('hidden');
-        if(data.user_interact == 1) {
+        //if(data.user_interact == 1) {
           $('.util-bar-markinterestedin-module').removeClass('hidden');
-        }
+        //}
+        $('.util-bar-addtoqueue-module').removeClass('hidden');
       }
+      
+      // store user_interact
+      var userInteract = data.user_interact;
+      userInteract = (userInteract == null) ? 0 : userInteract;
+      self.model.set('newsInteract', parseInt(userInteract));
+      
       if(data.user_interact == -1) {
         $('.util-bar-hidenews-btn').addClass('hiddennews');
+      }else if(data.user_interact == 1){
+        $('.util-bar-interestedin-label').addClass('markedasread');
+      }else if(data.user_interact == 2){
+        $('.util-bar-addtoqueue-btn').addClass('addedtoqueue');
+      }else{
+      
       }
       
       $('#content-loading-overlay .transition-wrap').animate({
@@ -159,14 +179,100 @@ define([
       'click .next': 'setAnimationType',
       'click .previous': 'setAnimationType',
       'click .util-bar-hidenews-btn': 'hideNewsOrRestoreNews',
+      'click .util-bar-interestedin-label': 'checkToRequestMarkingAsRead',
+      'click .util-bar-addtoqueue-btn': 'checkToAddOrRemoveFromQueue',
 		},
     
+    checkToAddOrRemoveFromQueue: function(e) {
+      var self = this;
+      var elem = $(e.target).parent();
+      if(elem.hasClass('disabledModule')){
+        // do nothing
+      }else{
+        self.addToOrRemoveFromQueue(elem);
+      }
+    },
+    
+    addToOrRemoveFromQueue: function(elem) {
+      var self = this;
+      var newsID = this.model.get('newsID');
+      
+      if(elem.hasClass('addedtoqueue')) {
+        // now remove it from queue
+        
+        // send request to server
+        var apiURL = '/api/removefromqueue/' + newsID;
+        $.ajax({
+          url: apiURL,
+          type: 'POST',
+          dataType: "json",
+          success: function(res) { 
+            if(res.result) {
+              Helper.showNotification("Tin đã được xoá khỏi danh sách 'Đọc sau'.", "success");
+              
+              // update DOM
+              $('.util-bar-addtoqueue-btn').removeClass('addedtoqueue');
+              $('.util-bar-interestedin-label').addClass('markedasread');
+              $('.util-bar-hidenews-btn').removeClass('hiddennews');
+              
+              self.model.set('newsInteract', 1);
+              self.updateUserInteractInCurrentSectionNewsList();
+            }
+            else {
+              Helper.showNotification("Có lỗi xảy ra!");
+            }
+          }
+        });
+      }else { 
+        // now add it to queue
+      
+        // kill considerReadTimer and checkFocusInterval
+        self.clearTimer();
+        console.log('considerReadTimer and checkFocusInterval have been killed.');
+      
+        // send request to server
+        var apiURL = '/api/addtoqueue/' + newsID;
+        $.ajax({
+          url: apiURL,
+          type: 'POST',
+          dataType: "json",
+          success: function(res) { 
+            if(res.result) { // true: succeed
+              var notificationContent = "Đã thêm vào danh sách 'Đọc sau'.";
+              Helper.showNotification(notificationContent, "success");
+              
+              // update DOM
+              $('.util-bar-addtoqueue-btn').addClass('addedtoqueue');
+              $('.util-bar-interestedin-label').removeClass('markedasread');
+              $('.util-bar-hidenews-btn').removeClass('hiddennews');
+              //$('.util-bar-markinterestedin-module').addClass('hidden');
+              
+              self.model.set('newsInteract', 2);
+              self.updateUserInteractInCurrentSectionNewsList();
+            }
+            else { // failed
+              Helper.showNotification("Có lỗi xảy ra! <addToQueue>");
+            }
+          }
+        });
+      }
+    },
+    
+    checkToRequestMarkingAsRead: function(e) {
+      var self = this;
+      var elem = $(e.target).parent();
+      if(elem.hasClass('disabledModule') || elem.hasClass('markedasread')){
+        // do nothing
+      }else{
+        self.requestMarkingReadNews();
+      }
+    },
+    
     hideNewsOrRestoreNews: function() {
+      var self = this;
       var newsID = this.model.get('newsID');
       
       if($('.util-bar-hidenews-btn').hasClass('hiddennews')) { // currently hidden => let's restore it     
-        // update DOM
-        $('.util-bar-hidenews-btn').removeClass('hiddennews');
         
         // send request to server
         var apiURL = '/api/restorenews/' + newsID;
@@ -177,6 +283,14 @@ define([
           success: function(res) { 
             if(res.result) {
               Helper.showNotification("Khôi phục tin thành công!", "success");
+              
+              // update DOM
+              $('.util-bar-hidenews-btn').removeClass('hiddennews');
+              $('.util-bar-addtoqueue-btn').removeClass('addedtoqueue');
+              $('.util-bar-interestedin-label').removeClass('markedasread');
+              
+              self.model.set('newsInteract', 0);
+              self.updateUserInteractInCurrentSectionNewsList();
             }
             else {
               Helper.showNotification("Đã xảy ra lỗi trong quá trình khôi phục tin!");
@@ -191,10 +305,6 @@ define([
         }
         console.log('considerReadTimer and checkFocusInterval have been killed.');
       
-        // update DOM
-        $('.util-bar-hidenews-btn').addClass('hiddennews');
-        $('.util-bar-markinterestedin-module').addClass('hidden');
-      
         // send request to server
         var apiURL = '/api/hidenews/' + newsID;
         $.ajax({
@@ -205,12 +315,43 @@ define([
             if(res.result) { // true: succeed
               var notificationContent = "Ẩn tin thành công.";
               Helper.showNotification(notificationContent, "success");
+              
+              // update DOM
+              $('.util-bar-hidenews-btn').addClass('hiddennews');
+              $('.util-bar-addtoqueue-btn').removeClass('addedtoqueue');
+              $('.util-bar-interestedin-label').removeClass('markedasread');
+              
+              self.model.set('newsInteract', -1);
+              self.updateUserInteractInCurrentSectionNewsList();
             }
             else { // failed
               Helper.showNotification("Đã xảy ra lỗi trong quá trình ẩn tin!");
             }
           }
         });
+      }
+    },
+    
+    updateUserInteractInCurrentSectionNewsList: function() {
+      var self = this;
+      var currentSection = app.appDataModel.get('currentSection');
+      var newsID = self.model.get("newsID")
+      if(currentSection !== null){
+        var currentSectionWrapModel = app.wraps.getWrap(currentSection);
+        var visibleNewsArr = currentSectionWrapModel.get('visibleNewsArr');
+        var data = currentSectionWrapModel.get('data');
+        var foundIdx = -1;
+        for(var i=0, len=data.news.length; i<len; i++){
+          if(newsID == data.news[i].id){
+            foundIdx = i;
+            break;
+          }
+        }
+        if(foundIdx != -1){ // found
+          var currNewsInteract = self.model.get('newsInteract');
+          visibleNewsArr[foundIdx] = currNewsInteract;
+          currentSectionWrapModel.set('visibleNewsArr', visibleNewsArr);
+        }
       }
     },
     
@@ -298,11 +439,15 @@ define([
       }
     },
     
-    onClose: function() {
+    clearTimer: function(){
       if(this.considerReadTimer) {
         clearTimeout(this.considerReadTimer);
       }
       clearInterval(this.checkFocusInterval);
+    },
+    
+    onClose: function() {
+      this.clearTimer();
     },
   });
 

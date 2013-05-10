@@ -18,11 +18,14 @@ $app->post('/login', 'login');
 $app->post('/register', 'register');
 $app->get('/retrieve_status', 'retrieveStatus');
 $app->get('/username/:id', authorize('user'), 'getUsername');
-$app->get('/section/:section(/:start(/:limit))', 'getSectionData');
+$app->get('/section/:viewAll/:section(/:start(/:limit))', 'getSectionData');
 $app->get('/newsDetails/:newsID', 'getNewsDetails');
 $app->post('/search', 'getSearchResult');
 $app->post('/hidenews/:newsID', authorize('user'), 'hideNews');
+$app->post('/addtoqueue/:newsID', authorize('user'), 'addToQueue');
 $app->post('/restorenews/:newsID', authorize('user'), 'restoreNews');
+$app->post('/undoreadlater/:newsID', authorize('user'), 'undoReadLater');
+$app->post('/removefromqueue/:newsID', authorize('user'), 'removeFromQueue');
 $app->post('/marknewsasread/:newsID', authorize('user'), 'markNewsAsRead');
 $app->run();
 
@@ -84,6 +87,93 @@ function markNewsAsRead($newsID) {
   }
 }
 
+function removeFromQueue($newsID) {
+  $app = \Slim\Slim::getInstance();
+  global $db;
+  try {
+    $email = $app->getEncryptedCookie('udt_e');
+    $user = $db->users()->select('id')->where('email = ?', $email)->fetch();
+    $news = $db->news_links()->select('id, link_md5')->where('id = ?', $newsID)->fetch();
+    $result = new stdClass();
+    
+    if ($user && $news) {
+      $result->responseTo = "removeFromQueue";
+      $result->newsID = $news['id'];
+      
+      $row = $db->news_userinteract()
+                ->select('*')
+                ->where('user_id = ? AND news_id = ? AND interact = 2', $user['id'], $news['id'])
+                ->fetch();
+      $updateResult = true;
+      if($row){
+        try {        
+          $db->news_userinteract()->where('user_id = ? AND news_md5 = ?', $user['id'], $news['link_md5'])->update(array('interact' => 1));
+        } catch(PDOException $e) {
+          //echo '{"error":{"text":'. $e->getMessage() .'}}';
+          $updateResult = false;
+        }
+      }
+      $updateResult = ($updateResult) ? true : false;
+      $result->result = $updateResult;
+      if (!isset($_GET['callback'])) {
+        echo json_encode($result);
+      } else {
+        echo $_GET['callback'] . '(' . json_encode($result) . ');';
+      }
+    } else {
+      
+    }
+  } catch (Exception $e) {
+    $result = new stdClass();
+    $error = new stdClass();
+    $error->text = $e->getMessage();
+    $result->error = $error;
+    echo json_encode($result);
+    //echo '{"error":{"text":'. $e->getMessage() .'}}';
+  }
+}
+
+function undoReadLater($newsID){
+  $app = \Slim\Slim::getInstance();
+  global $db;
+  try {
+    $email = $app->getEncryptedCookie('udt_e');
+    $user = $db->users()->select('id')->where('email = ?', $email)->fetch();
+    $news = $db->news_links()->select('id, link_md5')->where('id = ?', $newsID)->fetch();
+    $result = new stdClass();
+    
+    if ($user && $news) {
+      $result->responseTo = "undoReadLater";
+      $result->newsID = $news['id'];
+      
+      $row = $db->news_userinteract()
+                ->select('*')
+                ->where('user_id = ? AND news_id = ? AND interact = 2', $user['id'], $news['id'])
+                ->fetch();
+      $deleteResult = false;
+      if($row){
+        $deleteResult = $row->delete();
+      }
+      $deleteResult = ($deleteResult) ? true : false;
+      $result->result = $deleteResult;
+      if (!isset($_GET['callback'])) {
+        echo json_encode($result);
+      } else {
+        echo $_GET['callback'] . '(' . json_encode($result) . ');';
+      }
+    } else {
+      
+    }
+  } catch (Exception $e) {
+    $result = new stdClass();
+    $error = new stdClass();
+    $error->text = $e->getMessage();
+    $result->error = $error;
+    echo json_encode($result);
+    //echo '{"error":{"text":'. $e->getMessage() .'}}';
+  }
+}
+
 function restoreNews($newsID) {
   $app = \Slim\Slim::getInstance();
   global $db;
@@ -107,6 +197,60 @@ function restoreNews($newsID) {
       }
       $deleteResult = ($deleteResult) ? true : false;
       $result->result = $deleteResult;
+      if (!isset($_GET['callback'])) {
+        echo json_encode($result);
+      } else {
+        echo $_GET['callback'] . '(' . json_encode($result) . ');';
+      }
+    } else {
+      
+    }
+  } catch (Exception $e) {
+    $result = new stdClass();
+    $error = new stdClass();
+    $error->text = $e->getMessage();
+    $result->error = $error;
+    echo json_encode($result);
+    //echo '{"error":{"text":'. $e->getMessage() .'}}';
+  }
+}
+
+function addToQueue($newsID){
+  $app = \Slim\Slim::getInstance();
+  global $db;
+  try {
+    $email = $app->getEncryptedCookie('udt_e');
+    $user = $db->users()->select('id, username')->where('email = ?', $email)->fetch();
+    $news = $db->news_links()->select('id, link_md5, title')->where('id = ?', $newsID)->fetch();
+    $result = new stdClass();
+    if ($user && $news) {
+      $array = array(
+        "user_id" => $user['id'],
+        "news_id" => $news['id'],
+        "news_md5" => $news['link_md5'],
+        "interact" => 2,
+        "time" => date('Y-m-d H:i:s'),
+      );
+      
+      $newsInfo = array(
+        "id" => $news['id'],
+        "title" => $news['title'],
+      );
+      $result->newsInfo = $newsInfo;
+      
+      /*
+      $result->data = $array;
+      $insertResult = $db->news_userinteract()->insert($array);
+      */
+      $insertResult = $db->news_userinteract()->insert_update(
+        array("user_id" => $user['id'],
+              "news_id" => $news['id']),
+        $array,
+        array("interact" => 2)
+      );
+      
+      $insertResult = ($insertResult) ? true : false;
+      $result->result = $insertResult;
       if (!isset($_GET['callback'])) {
         echo json_encode($result);
       } else {
@@ -194,7 +338,7 @@ function getNewsDetails($newsID) {
     $news = $db->news_links()
               ->join('news_userinteract', 'left join news_userinteract on news_links.link_md5 = news_userinteract.news_md5')
               ->join('users', 'left join users on news_userinteract.user_id = users.id')
-              ->select('news_links.link, news_links.title, news_userinteract.interact user_interact')
+              ->select('news_links.link, news_links.title, news_links.link_md5, news_links.viewCount count, news_userinteract.interact user_interact')
               ->where('news_links.id = ?', $newsID)->fetch();
   }else {
     $news = $db->news_links()
@@ -203,6 +347,13 @@ function getNewsDetails($newsID) {
   }
   
   if($news){
+    // update viewCount
+    try {        
+      $db->news_links()->where('link_md5 = ?', $news['link_md5'])->update(array('viewCount' => $news['count']+1));
+    } catch(PDOException $e) {
+      //echo '{"error":{"text":'. $e->getMessage() .'}}';
+    }
+  
     $newsLink = trim($news['link']);
     $newsTitle = trim($news['title']);
     $data->link = $newsLink;
@@ -215,7 +366,7 @@ function getNewsDetails($newsID) {
   echo json_encode($data);
 }
 
-function getSectionData($section, $start = 0, $limit = 18) {
+function getSectionData($viewAll, $section, $start = 0, $limit = 90) {
   $data = (object) null;
   global $db;
   
@@ -228,27 +379,68 @@ function getSectionData($section, $start = 0, $limit = 18) {
   /* Articles */
   $news_links = array();
   if(!empty($email) && !empty($udt_r)) { // logged in user
-    if ($section == 'home') {
+    if ($section == 'home' && $viewAll == "false") {
       $news_links = $db->news_links()
+                  ->join('recommended_news', 'join recommended_news on news_links.link_md5 = recommended_news.news_md5')
                   ->join('news_categories', 'left join news_categories on news_links.cat_id = news_categories.id')
                   ->join('news_sources', 'left join news_sources on news_links.source_id = news_sources.id')    
                   ->join('news_userinteract', 'left join news_userinteract on news_links.link_md5 = news_userinteract.news_md5')    
                   ->join('users', 'left join users on news_userinteract.user_id = users.id')    
-                  ->select('news_links.id, news_links.title, news_links.description, news_links.link, 
+                  ->select('news_links.id, news_links.pubDate, news_links.title, news_links.description, news_links.link, 
                     news_links.image_fullsize image, news_categories.section section, news_categories.name_abbr cat_abbr, 
                     news_categories.name_short cat_name, news_sources.`name` source, news_sources.alias source_alias, news_userinteract.interact user_interact')
-                  ->where('news_userinteract.interact is NULL
+                  ->where('(news_userinteract.interact is NULL
                       OR (news_userinteract.interact is NOT NULL AND news_userinteract.interact != -1)
-                      OR (news_userinteract.interact = -1 AND news_userinteract.user_id != ?)',
-                    $user['id'])
-                  ->order('news_links.pubDate desc')->limit($limit, $start);
-    }else{
+                      OR (news_userinteract.interact = -1 AND news_userinteract.user_id != ?)) 
+                    AND (recommended_news.user_id = ?)
+                    AND (news_links.pubDate BETWEEN date_sub(now(),interval 3 day) and now())',
+                    $user['id'], $user['id'])
+                  ->order('news_links.pubDate desc')
+                  ->limit($limit, $start);
+    }else if($section != 'home' && $viewAll == "false"){
       $news_links = $db->news_links()
+                  ->join('recommended_news', 'join recommended_news on news_links.link_md5 = recommended_news.news_md5')
                   ->join('news_categories', 'left join news_categories on news_links.cat_id = news_categories.id')
                   ->join('news_sources', 'left join news_sources on news_links.source_id = news_sources.id')    
                   ->join('news_userinteract', 'left join news_userinteract on news_links.link_md5 = news_userinteract.news_md5')    
                   ->join('users', 'left join users on news_userinteract.user_id = users.id')    
-                  ->select('news_links.id, news_links.title, news_links.description, news_links.link, 
+                  ->select('news_links.id, news_links.pubDate, news_links.title, news_links.description, news_links.link, 
+                    news_links.image_fullsize image, news_categories.section section, news_categories.name_abbr cat_abbr, 
+                    news_categories.name_short cat_name, news_sources.`name` source, news_sources.alias source_alias, news_userinteract.interact user_interact')
+                  ->where('(news_categories.parent_abbr = ? OR news_categories.name_abbr = ?) 
+                      AND (news_userinteract.interact is NULL
+                        OR (news_userinteract.interact is NOT NULL AND news_userinteract.interact != -1)
+                        OR (news_userinteract.interact = -1 AND news_userinteract.user_id != ?)
+                      )
+                      AND
+                        (recommended_news.user_id = ?)', 
+                    $section, $section, $user['id'], $user['id'])
+                  ->order('news_links.pubDate desc')->limit($limit, $start);
+    }else if($section == 'home' && $viewAll == "true") {
+      $news_links = $db->news_links()
+                  ->join('recommended_news', 'join recommended_news on news_links.link_md5 = recommended_news.news_md5')
+                  ->join('news_categories', 'left join news_categories on news_links.cat_id = news_categories.id')
+                  ->join('news_sources', 'left join news_sources on news_links.source_id = news_sources.id')    
+                  ->join('news_userinteract', 'left join news_userinteract on news_links.link_md5 = news_userinteract.news_md5')    
+                  ->join('users', 'left join users on news_userinteract.user_id = users.id')    
+                  ->select('news_links.id, news_links.pubDate, news_links.title, news_links.description, news_links.link, 
+                    news_links.image_fullsize image, news_categories.section section, news_categories.name_abbr cat_abbr, 
+                    news_categories.name_short cat_name, news_sources.`name` source, news_sources.alias source_alias, news_userinteract.interact user_interact')
+                  ->where('(news_userinteract.interact is NULL
+                      OR (news_userinteract.interact is NOT NULL AND news_userinteract.interact != -1)
+                      OR (news_userinteract.interact = -1 AND news_userinteract.user_id != ?)) 
+                    AND (news_links.pubDate BETWEEN date_sub(now(),interval 3 day) and now())',
+                    $user['id'])
+                  ->order('news_links.pubDate desc')
+                  ->limit($limit, $start);
+    }else if($section != 'home' && $viewAll == "true"){
+      $news_links = $db->news_links()
+                  ->join('recommended_news', 'join recommended_news on news_links.link_md5 = recommended_news.news_md5')
+                  ->join('news_categories', 'left join news_categories on news_links.cat_id = news_categories.id')
+                  ->join('news_sources', 'left join news_sources on news_links.source_id = news_sources.id')    
+                  ->join('news_userinteract', 'left join news_userinteract on news_links.link_md5 = news_userinteract.news_md5')    
+                  ->join('users', 'left join users on news_userinteract.user_id = users.id')    
+                  ->select('news_links.id, news_links.pubDate, news_links.title, news_links.description, news_links.link, 
                     news_links.image_fullsize image, news_categories.section section, news_categories.name_abbr cat_abbr, 
                     news_categories.name_short cat_name, news_sources.`name` source, news_sources.alias source_alias, news_userinteract.interact user_interact')
                   ->where('(news_categories.parent_abbr = ? OR news_categories.name_abbr = ?) 
@@ -258,13 +450,15 @@ function getSectionData($section, $start = 0, $limit = 18) {
                       )', 
                     $section, $section, $user['id'])
                   ->order('news_links.pubDate desc')->limit($limit, $start);
+    }else{
+    
     }
   }else { // not logged in
     if ($section == 'home') {
       $news_links = $db->news_links()
                   ->join('news_categories', 'left join news_categories on news_links.cat_id = news_categories.id')
                   ->join('news_sources', 'left join news_sources on news_links.source_id = news_sources.id')    
-                  ->select('news_links.id, news_links.title, news_links.description, news_links.link, 
+                  ->select('news_links.id, news_links.pubDate, news_links.title, news_links.description, news_links.link, 
                     news_links.image_fullsize image, news_categories.section section, news_categories.name_abbr cat_abbr, 
                     news_categories.name_short cat_name, news_sources.`name` source, news_sources.alias source_alias')
                   ->order('news_links.pubDate desc')->limit($limit, $start);
@@ -272,7 +466,7 @@ function getSectionData($section, $start = 0, $limit = 18) {
       $news_links = $db->news_links()
                   ->join('news_categories', 'left join news_categories on news_links.cat_id = news_categories.id')
                   ->join('news_sources', 'left join news_sources on news_links.source_id = news_sources.id')    
-                  ->select('news_links.id, news_links.title, news_links.description, news_links.link, 
+                  ->select('news_links.id, news_links.pubDate, news_links.title, news_links.description, news_links.link, 
                     news_links.image_fullsize image, news_categories.section section, news_categories.name_abbr cat_abbr, 
                     news_categories.name_short cat_name, news_sources.`name` source, news_sources.alias source_alias')
                   ->where('news_categories.parent_abbr = ? OR news_categories.name_abbr = ?', $section, $section)

@@ -17,6 +17,40 @@ define(['marionette','templates', 'helper', 'vent'], function (Marionette, templ
     
     events: {
       'click button.restore-news-btn': 'restoreHiddenNews',
+      'click button.undo-readlater-btn': 'undoReadLater',
+    },
+    
+    undoReadLater: function(e) {
+      var alertParentDiv = $(e.target).closest('div.alert');
+      alertParentDiv.animate({
+          opacity: 0
+        }, {
+          duration: 200,
+          easing: 'easeInOutCubic',
+          queue: false,
+          complete: function(){
+            alertParentDiv.css('display', 'none');
+          }
+        }
+      );
+      
+      var newsID = $(e.currentTarget).data("id");
+      
+      // send request to server
+      var apiURL = '/api/undoreadlater/' + newsID;
+      $.ajax({
+        url: apiURL,
+        type: 'POST',
+        dataType: "json",
+        success: function(res) { 
+          if(res.result) {
+            vent.trigger('cardWrapSection:undoReadLater', res.newsID);
+          }
+          else {
+            Helper.showNotification("Đã xảy ra lỗi trong quá trình huỷ hành động!");
+          }
+        }
+      });
     },
     
     restoreHiddenNews: function(e) {

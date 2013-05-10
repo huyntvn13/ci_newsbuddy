@@ -28,13 +28,31 @@ define(['jquery', 'underscore', 'backbone', 'vent'],function($, _, Backbone, ven
             console.log('No valid logged in data about you!');
             self.set('authenticated', false);
           }
+          self.updateAllViewAllValues();
         }
       });
     },
     
+    updateAllViewAllValues: function() {
+      var self = this;
+      if(self.get('authenticated')){
+        $.each(App.appDataModel.get('sections'), function(index, sName){
+          var wrap = App.wraps.getWrap(sName);
+          wrap.set("viewAll", false);
+        });
+      }else{
+        $.each(App.appDataModel.get('sections'), function(index, sName){
+          var wrap = App.wraps.getWrap(sName);
+          wrap.set("viewAll", true);
+        });
+      }
+    },
+    
     initialize : function() {
+      var self = this;
       this.retrieveStatus();
       this.listenTo(this, 'change:authenticated', function(){
+        self.updateAllViewAllValues();
         vent.trigger('newsBuddy:refreshCurrentSection');
       });
     },

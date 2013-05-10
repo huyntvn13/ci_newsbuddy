@@ -15,6 +15,8 @@ define(['jquery', 'underscore', 'backbone'],function($, _, Backbone){
       currentCardWidth: 0,
       animatingSectionSwitching: false,
       currentScrollTopValue: 0,
+      numNewsPerPage: 18,
+      updateInterval: 1800000, // 30 minutes in milliseconds
       
       showingView: false, // maybe: 'news', 'section', 'error', 'search', 'search_news'
       currentSearchKeyword: "",

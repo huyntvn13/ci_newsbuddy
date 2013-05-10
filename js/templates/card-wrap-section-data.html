@@ -12,7 +12,15 @@
             <div class="collection  clearfix" data-vr-zone="Headline-Grid">
               <div class="head">
                 <h5 class="title">Tin mới</h5>
-                <p class="time">Cập nhật lúc <%= updatedTime %></p>
+                <p class="time">Cập nhật: <abbr class="timeago" title="<%= updatedTime %>"><%= updatedTime %></abbr></p>
+                <% 
+                var authenticatedOrNot = App.userModel.get("authenticated");
+                if(1==1) { %>
+                <ul class="viewAllNav nav nav-pills">
+                  <li data-value="false" class="viewAllNavItem active"><a>Gợi ý</a></li>
+                  <li data-value="true" class="viewAllNavItem redBg"><a>Tất cả</a></li>
+                </ul>
+                <% } %>
                 <div class="ui-toggler blue headline-toggler "><span class="ui-btn icon ui-btn2 grid-big ui-toggle-btn active">Grid</span><span class="ui-btn icon ui-btn2 list-big ui-toggle-btn ">List</span></div>
                 <!--
                 <div class="headline-toggler ui-toggler big-picture"><a class="ui-btn icon ui-btn2 cover-big ui-toggle-btn" href="/big-page/news/" data-ht="thebigpagebutton">
@@ -21,22 +29,47 @@
                 </div>
                 -->
               </div>
-              <div class="page clearfix active" data-items-per-page="9" data-itemnum="0">
-                <% for(var i=0, len=data["news"].length; i<len; i++){
-                   var news = data["news"][i]; 
-                   var columnText = (i%2==0) ? "first-column" : "last-column";
-                   var noimage = (news["image"] == "") ? "noimage" : "";
-                   
-                   var parentAbbr = data["catParent"][news["cat_abbr"]]["parent_abbr"];
-                   var belongToSection = (parentAbbr == "") ? data["catParent"][news["cat_abbr"]]["name_abbr"] : parentAbbr;
-                   
-                   var sectionHref = "";
-                   if(parentAbbr == ""){
-                      sectionHref = "/" + belongToSection;
-                   }else {
-                      sectionHref = "/" + belongToSection + "/" + news["cat_abbr"];
-                   }
-                   %>
+              <div class="page clearfix active" data-items-per-page="18" data-itemnum="0">
+                <% if(data["news"].length == 0 && viewAll == false){ %>
+                <span class="sectionMessage">Gần đây, bạn không được gợi ý tin mới nào trong mục này. Nếu muốn, bạn có thể chuyển sang chế độ <em class="redColor viewAllNewsText">"Xem tất cả"</em>.</span>
+                <% } %>
+                
+                <% if(data["news"].length == 0 && viewAll == true){ %>
+                <span class="sectionMessage">Rất tiếc! Không có tin mới nào trong mục này.</span>
+                <% } %>
+                
+                <% 
+                var numNewsPerPage = app.appDataModel.get("numNewsPerPage");
+                var startAtIdx = 0 + (pageNo - 1) * numNewsPerPage;
+                startAtIdx = (startAtIdx <= data["news"].length - 1) ? startAtIdx : 0;
+                var endAtIdx = startAtIdx + numNewsPerPage - 1;
+                endAtIdx = (endAtIdx <= data["news"].length - 1) ? endAtIdx : data["news"].length - 1;
+
+                var visibleRunner = 0;
+                for(var i=startAtIdx; i<=endAtIdx; i++){
+                  if(visibleNewsArr[i] >= 0){
+                  var news = data["news"][i]; 
+                  var columnText = (visibleRunner%2==0) ? "first-column" : "last-column";
+                  var noimage = (news["image"] == "") ? "noimage" : "";
+
+                  var parentAbbr = data["catParent"][news["cat_abbr"]]["parent_abbr"];
+                  var belongToSection = (parentAbbr == "") ? data["catParent"][news["cat_abbr"]]["name_abbr"] : parentAbbr;
+
+                  var sectionHref = "";
+                  if(parentAbbr == ""){
+                    sectionHref = "/" + belongToSection;
+                  }else {
+                    sectionHref = "/" + belongToSection + "/" + news["cat_abbr"];
+                  }
+
+                  var mysqlDateTimeStr = news["pubDate"];
+                  var isoPubdate = mysqlDateTimeStr;
+                  if(typeof mysql_string === "string"){
+                    var t = mysqlDateTimeStr.split(/[- :]/);
+                    isoPubdate = new Date(t[0], t[1] - 1, t[2], t[3] || 0, t[4] || 0, t[5] || 0);  
+                    isoPubdate = isoPubdate.toISOString();
+                  }    
+                %>
                 <div class="<%= columnText %> headline <%= noimage %> <%= belongToSection %>" data-id="<%= news.id %>" data-vr-contentbox="">
                   <% 
                     var appSections = app.appDataModel.get("sections");
@@ -46,30 +79,50 @@
                     }
                     sectionStr += "/" + news.source_alias + "/" + convertToSeoFriendlyUrl(news.title) + "/" + news.id;
                   %>
-                  <% if(news["user_interact"] == 1) { %>
-                  <a class="hasbeenread-link" href="<%= sectionStr %>">
+                  
+                  <% 
+                  var hbrOverlayHidden = (visibleNewsArr[i] == 1 || visibleNewsArr[i] == 2) ? "" : "hidden";
+                  var isQueueOverlay = visibleNewsArr[i] == 2 ? "addedToQueueOverlay" : "";
+                  var overlayText = visibleNewsArr[i] == 2 ? "ĐỌC SAU" : "ĐÃ ĐỌC";
+                  %>
+                  <a class="hasbeenread-link <%= hbrOverlayHidden %> <%= isQueueOverlay %>" href="<%= sectionStr %>">
                     <div class="hasbeenread-overlay tile">
-                      <div class="hasbeenread-text">ĐÃ ĐỌC</div>
+                      <div class="hasbeenread-text"><%= overlayText %></div>
                     </div>
                   </a>
-                  <% } %>
+                  
                   <div class="authors byline byline-nopub"><span class="author"><em><%= news["source"] %></em></span></div>
+                  <div class="newsPubDate byline byline-nopub"><span class="newsPubDate"><em><abbr class="timeago" title="<%= isoPubdate %>"><%= isoPubdate %></abbr></em></span></div>
                   <a class="parent-label <%= belongToSection %>" href="<%= sectionHref %>">
                   <%= news["cat_name"] %>
                   </a>
-                  <% if(app.userModel.get("authenticated") && news["user_interact"] != 1) { %>
-                  <div class="userNewsBtn-container">
+                  <% 
+                  var userNewsBtnHiddenOrNot = "hidden";
+                  if(app.userModel.get("authenticated") && visibleNewsArr[i] != 1 && visibleNewsArr[i] != 2) {
+                    userNewsBtnHiddenOrNot = "";
+                  }%>
+                  <div class="userNewsBtn-container <%= userNewsBtnHiddenOrNot %>">
                   <div class="userNewsBtn-wrapper">
-                    <div class="userNewsBtn hideBtnDiv">
-                      <i class="icon-double-angle-left icon-2x"></i>
+                    <div class="userNewsBtn line1BtnDiv">
+                      <i class="icon-double-angle-left icon-2x doubleAngle left"></i>
+                      
+                      <button class="btn btn-mini btn-primary addToQueueBtn" type="button" title="Đọc sau" data-id="<%= news.id %>">
+                      <i class="icon-time icon-2x"></i>
+                      </button>
+                      
+                      <button class="btn btn-mini btn-success markReadBtn" type="button" title="Đã xem" data-id="<%= news.id %>">
+                      <i class="icon-check icon-2x"></i>
+                      </button>
+                      
                       <button class="btn btn-mini btn-warning hideBtn" type="button" title="Ẩn tin này" data-id="<%= news.id %>">
                       <i class="icon-trash icon-2x"></i>
                       </button>
-                      <i class="icon-double-angle-left icon-2x"></i>
+                      
+                      <i class="icon-double-angle-left icon-2x doubleAngle right"></i>
                     </div>
                   </div>
                   </div>
-                  <% } %>
+                  
                   <a class="anchor" href="<%= sectionStr %>" data-ht="HeadlineGrid1">
                     <div class="front tile">
                       <% if(news["image"] != "") {%>
@@ -96,12 +149,19 @@
                     </div>
                   </a>
                 </div>
-                <% } %>
+                <% 
+                  visibleRunner++;
+                  }
+                } %>
               </div>
             </div>
             <div class="page-navigation">
-              <a class="pagenavlink prev-navlink hidden" href="#"></a>
-              <a class="pagenavlink next-navlink" href="#"></a>
+              <%
+                var prevHiddenText = (pageNo == 1 || numOfPages == 0) ? "hidden" : "";
+                var nextHiddenText = (pageNo == numOfPages || numOfPages == 0) ? "hidden" : "";
+              %>
+              <a class="pagenavlink prev-navlink <%= prevHiddenText %>"></a>
+              <a class="pagenavlink next-navlink <%= nextHiddenText %>"></a>
             </div>
             <!--
             <div class="show-more"><a href="#" class="button-add-content" data-default="Show More News" data-loading="Loading More News">Show More News</a></div>
