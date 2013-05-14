@@ -342,7 +342,7 @@ function getNewsDetails($newsID) {
               ->where('news_links.id = ?', $newsID)->fetch();
   }else {
     $news = $db->news_links()
-              ->select('news_links.link, news_links.title')
+              ->select('news_links.link, news_links.title, news_links.link_md5, news_links.viewCount count')
               ->where('news_links.id = ?', $newsID)->fetch();
   }
   
@@ -393,7 +393,7 @@ function getSectionData($viewAll, $section, $start = 0, $limit = 90) {
                       OR (news_userinteract.interact is NOT NULL AND news_userinteract.interact != -1)
                       OR (news_userinteract.interact = -1 AND news_userinteract.user_id != ?)) 
                     AND (recommended_news.user_id = ?)
-                    AND (news_links.pubDate BETWEEN date_sub(now(),interval 3 day) and now())',
+                    AND (news_links.pubDate BETWEEN date_sub(now(),interval 30 day) and now())',
                     $user['id'], $user['id'])
                   ->order('news_links.pubDate desc')
                   ->limit($limit, $start);
@@ -412,8 +412,8 @@ function getSectionData($viewAll, $section, $start = 0, $limit = 90) {
                         OR (news_userinteract.interact is NOT NULL AND news_userinteract.interact != -1)
                         OR (news_userinteract.interact = -1 AND news_userinteract.user_id != ?)
                       )
-                      AND
-                        (recommended_news.user_id = ?)', 
+                      AND (recommended_news.user_id = ?) 
+                      AND (news_links.pubDate BETWEEN date_sub(now(),interval 30 day) and now())', 
                     $section, $section, $user['id'], $user['id'])
                   ->order('news_links.pubDate desc')->limit($limit, $start);
     }else if($section == 'home' && $viewAll == "true") {
@@ -429,7 +429,7 @@ function getSectionData($viewAll, $section, $start = 0, $limit = 90) {
                   ->where('(news_userinteract.interact is NULL
                       OR (news_userinteract.interact is NOT NULL AND news_userinteract.interact != -1)
                       OR (news_userinteract.interact = -1 AND news_userinteract.user_id != ?)) 
-                    AND (news_links.pubDate BETWEEN date_sub(now(),interval 3 day) and now())',
+                    AND (news_links.pubDate BETWEEN date_sub(now(),interval 30 day) and now())',
                     $user['id'])
                   ->order('news_links.pubDate desc')
                   ->limit($limit, $start);
@@ -447,7 +447,8 @@ function getSectionData($viewAll, $section, $start = 0, $limit = 90) {
                       AND (news_userinteract.interact is NULL
                         OR (news_userinteract.interact is NOT NULL AND news_userinteract.interact != -1)
                         OR (news_userinteract.interact = -1 AND news_userinteract.user_id != ?)
-                      )', 
+                      ) 
+                      AND (news_links.pubDate BETWEEN date_sub(now(),interval 30 day) and now())', 
                     $section, $section, $user['id'])
                   ->order('news_links.pubDate desc')->limit($limit, $start);
     }else{
