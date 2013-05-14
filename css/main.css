@@ -1786,6 +1786,7 @@ a.sp-nav-link {
   display: block;
   position: absolute;
   opacity: .6;
+  cursor: pointer;
 }
 .page-navigation .pagenavlink:hover {
   opacity: 1;
@@ -1846,6 +1847,7 @@ a.button-add-content {
 	position: relative;
 }
 .headlines .page {
+  min-height: 300px;
 	max-height: 50000px;
 	overflow: hidden;
 	-webkit-transition: max-height .3s ease-in;
@@ -2282,7 +2284,23 @@ a.button-add-content.inactive:after,a.button-add-content.inactive:active:after,a
 	text-transform:uppercase;
 	white-space:nowrap
 }
-.headlines .listview .userNewsBtn-container .hideBtnDiv > i {
+.headlines .headline>.byline.newsPubDate {
+  width: 300px;
+}
+.headlines .headline>.byline.newsPubDate em{
+  font-style: normal;
+}
+.byline .newsPubDate {
+  padding-top: 7px;
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: right;
+  font-size: 11px;
+  cursor: pointer;
+  font-weight: normal;
+}
+.headlines .listview .userNewsBtn-container .line1BtnDiv > i {
   color: orange;
 }
 .headlines .listview .headline>.byline {
@@ -2448,6 +2466,9 @@ a.button-add-content.inactive:after,a.button-add-content.inactive:active:after,a
   background: white;
   background-color: white;
   cursor: pointer;
+}
+.headlines .headline .addedToQueueOverlay .hasbeenread-overlay.tile {
+  background: #006dcc;
 }
 .headlines .headline .hasbeenread-overlay.tile .hasbeenread-text {
   padding-right: 10px;
@@ -2816,7 +2837,7 @@ a.bhl-spike-first {
 .util-bar-interact-module.first {
   /*border-bottom: 0;*/
 }
-.util-bar-interestedin-label, .util-bar-hidenews-btn {
+.util-bar-interestedin-label, .util-bar-hidenews-btn, .util-bar-addtoqueue-btn {
   background-clip: padding-box;
   clear: none;
   color: #b1dfff;
@@ -2830,17 +2851,23 @@ a.bhl-spike-first {
   width: 40px;
   text-shadow: 0 1px 0 rgba(0,0,0,.2);
 }
+.util-bar-addtoqueue-btn {
+  font-size: 12px;
+}
 .util-bar-module .label-only {
   cursor: default;
 }
-.util-bar-hidenews-btn i {
+.util-bar-hidenews-btn i, .util-bar-interestedin-label i, .util-bar-addtoqueue-btn i {
   color: gray;
 }
-.util-bar-interestedin-label i {
+.util-bar-interestedin-label.markedasread i {
   color: green;
 }
 .util-bar-hidenews-btn.hiddennews i {
   color: darkorange;
+}
+.util-bar-addtoqueue-btn.addedtoqueue i {
+  color: #006dcc;
 }
 .util-bar-module.no-button {
   border: 0;
@@ -3830,17 +3857,55 @@ article.asset.ui-loading {
   height: 32px;
 }
 .headlines .headline .userNewsBtn-wrapper .userNewsBtn button {
-  margin: -10px 10px 0 10px;
+  margin: -10px 5px 0px 0px;
 }
-.hideBtnDiv button {
+.headlines .headline .userNewsBtn-wrapper .userNewsBtn i.doubleAngle.left {
+  margin-right: 10px; 
+}
+.headlines .headline .userNewsBtn-wrapper .userNewsBtn i.doubleAngle.right {
+  margin-left: 5px; 
+}
+.line1BtnDiv button {
   width: 30px;
 }
 .userNewsBtn-wrapper .userNewsBtn i {
 }
 .headlines .headline .userNewsBtn-container:hover{
-  width: 100px;
+  width: 180px;
 }
 .userNewsBtn-wrapper:hover > i {
   color: red;
 }
 /*** END user-feedback-btns ***/
+
+.sectionMessage{
+  font-size: 22px;
+  line-height: 30px;
+  text-align: center;
+  margin: 50px 10px;
+  position: absolute;
+  color: green;
+}
+.sectionMessage em.redColor {
+  color: red;
+}
+.sectionMessage em.viewAllNewsText {
+  cursor: pointer;
+}
+
+.viewAllNav {
+  position: absolute;
+  right: 210px;
+  top: 8px;
+}
+.viewAllNav li a {
+  color: #646464;
+  cursor: pointer;
+}
+.viewAllNav li.active.redBg a {
+  background-color: red;
+}
+
+.utility-wrap .util-btn.disabledModule i {
+  color: #d6d6d6;
+}

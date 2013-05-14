@@ -6,6 +6,7 @@ define(['jquery', 'underscore', 'backbone'],function($, _, Backbone){
     defaults: {
       overlayType: 'news', // posible types: news, error
       newsID: 0,
+      newsInteract: "",
     },
 
     initialize : function() {

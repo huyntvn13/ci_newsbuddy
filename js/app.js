@@ -293,14 +293,16 @@ define([
       // allow animation while switching between sections
       App.appDataModel.set('canAnimateFromNowOn', true);
       
+      var forced = (subSectionOldValue == subSectionValue) ? false : true;
+      
       if(subSection !== undefined){ // goto subSection => request subSection
         wrap.set('loading', true);
-        wrap.requestSectionData();
+        wrap.requestSectionData(forced);
       }else { // goto Section (bigSection) 
         // if(currentSection == section) => request Section data
         if(currentSection == section){
           wrap.set('loading', true);
-          wrap.requestSectionData();
+          wrap.requestSectionData(forced);
         }
       }
       
@@ -386,7 +388,13 @@ define([
   vent.on('cardWrapSection:restoreNews', function(newsID) {
     var currentSection = App.appDataModel.get('currentSection');
     var wrap = App.wraps.getWrap(currentSection);
-    wrap.restoreNews(newsID);
+    wrap.restoreNews(newsID, "restorenews");
+  });
+  
+  vent.on('cardWrapSection:undoReadLater', function(newsID) {
+    var currentSection = App.appDataModel.get('currentSection');
+    var wrap = App.wraps.getWrap(currentSection);
+    wrap.restoreNews(newsID, "undoreadlater");
   });
   
 	return App;

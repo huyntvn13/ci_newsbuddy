@@ -22,10 +22,13 @@
       <div class="utility-wrap active show">
         <div class="utility-bar">
           <div class="util-bar-module has-button util-bar-hidenews-module first hidden">
-            <div class="util-bar-hidenews-btn" title="'Tôi không quan tâm tới tin này!' (Ẩn tin)"><i class="icon-trash icon-2x"></i></div>
+            <div class="util-btn util-bar-hidenews-btn" title="Ẩn tin ('Tôi không quan tâm tới tin này!')"><i class="icon-trash icon-2x"></i></div>
           </div>
-          <div class="util-bar-module no-button util-bar-markinterestedin-module hidden">
-            <div class="util-bar-interestedin-label label-only" title="Biểu tượng này thể hiện sự quan tâm của bạn với nội dung tin. Nếu không phải, bạn có thể sử dụng nút trên để ẩn tin."><i class="icon-check icon-2x"></i></div>
+          <div class="util-bar-module has-button util-bar-markinterestedin-module hidden">
+            <div class="util-btn util-bar-interestedin-label" title="Đánh dấu tin đã được đọc."><i class="icon-check icon-2x"></i></div>
+          </div>
+          <div class="util-bar-module has-button util-bar-addtoqueue-module hidden">
+            <div class="util-btn util-bar-addtoqueue-btn" title="Đọc sau / Xoá khỏi danh sách 'Đọc sau'."><i class="icon-time icon-2x"></i></div>
           </div>
         </div>
       </div>
@@ -57,7 +60,7 @@
       var wrapVisibleNewsArr = wrap.get("visibleNewsArr");
       var prevIdx = -1, thisIdx = -1, nextIdx = -1;
       for(var i=0, len=wrapData.news.length; i<len; i++){
-        if(wrapVisibleNewsArr[i]){
+        if(wrapVisibleNewsArr[i] >= 0){
           if(newsID == wrapData.news[i].id){
             thisIdx = i;
           }

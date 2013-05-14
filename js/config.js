@@ -24,6 +24,7 @@ require.config({
     imagecenter: "libs/jquery.blImageCenter",
     readmore: "libs/jquery.readmore.min",
     throttledebounce: "libs/jquery.ba-throttle-debounce.min",
+    timeago: "libs/jquery.timeago",
     
     // bootstrap + plugins
     bootstrap: "libs/bootstrap",
@@ -50,6 +51,9 @@ require.config({
       exports: "jQuery"
     },
     easing: {
+      deps: ['jquery'],
+    },
+    timeago: {
       deps: ['jquery'],
     },
     readmore: {

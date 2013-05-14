@@ -15,6 +15,7 @@ require([
   "imagecenter",
   "bootstrap",
   "notify",
+  "timeago",
 ], function($, _, app, Backbone, MainRouter, MainController){
   this.app = app;
   

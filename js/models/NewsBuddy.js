@@ -15,6 +15,8 @@ define(['jquery', 'underscore', 'backbone'],function($, _, Backbone){
       currentCardWidth: 0,
       animatingSectionSwitching: false,
       currentScrollTopValue: 0,
+      numNewsPerPage: 18,
+      updateInterval: 1800000, // 30 minutes in milliseconds
       
       showingView: false, // maybe: 'news', 'section', 'error', 'search', 'search_news'
       currentSearchKeyword: "",
@@ -48,7 +50,7 @@ define(['jquery', 'underscore', 'backbone'],function($, _, Backbone){
         'technology': ['ict', 'science'],
         'lifestyle':  ['culture', 'entertainment'],
         'education':  ['studying_abroad', 'enrollment'],
-        'health':     ['be_healthy', 'gender_health'],
+        'health':     ['be_healthy', 'love_marriage'],
         'realestate': ['realestate_news', 'living_space'],
       },
       sectionsDataOrder: [],
