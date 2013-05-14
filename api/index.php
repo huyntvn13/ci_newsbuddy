@@ -35,7 +35,7 @@ function markNewsAsRead($newsID) {
   try {
     $email = $app->getEncryptedCookie('udt_e');
     $user = $db->users()->select('id')->where('email = ?', $email)->fetch();
-    $news = $db->news_links()->select('id, link_md5, title')->where('id = ?', $newsID)->fetch();
+    $news = $db->news_links()->select('id, link_md5, title, cat_id')->where('id = ?', $newsID)->fetch();
     $result = new stdClass();
     
     if ($user && $news) {
@@ -45,6 +45,7 @@ function markNewsAsRead($newsID) {
         "user_id" => $user['id'],
         "news_id" => $news['id'],
         "news_md5" => $news['link_md5'],
+        "cat_id" => $news['cat_id'],
         "interact" => 1,
         "time" => date('Y-m-d H:i:s'),
       );
